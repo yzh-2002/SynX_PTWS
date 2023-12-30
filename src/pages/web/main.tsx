@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
 
-import router from './router'
-import "./styles/taildwind.css"
+import router from '@/router'
+import "@/styles/taildwind.css"
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -2,19 +2,21 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from "tailwindcss"
 import autoprefixer from "autoprefixer"
-import { join } from "path"
+import { join, resolve } from "path"
 
-import { PROXY } from "./config/global"
+import { MOCK_PORT, PROXY, entryKey } from "./config/global"
+import { ViteMockApiPlugin } from "./mock"
 
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), ViteMockApiPlugin({ port: MOCK_PORT })],
   resolve: {
     alias: {
       '@': join(__dirname, 'src')
     }
   },
+  root: resolve('src', 'pages', entryKey),
   server: {
     host: '0.0.0.0',
     proxy: PROXY
@@ -24,4 +26,5 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer]
     }
   }
+  // TODO：mpa，build时也需要特殊配置
 })
