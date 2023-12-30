@@ -1,44 +1,51 @@
 import { useEffect } from "react"
-import { useRequest } from "ahooks"
+import { useNavigate } from "react-router-dom"
+import { message } from "antd"
 
-import { LarkAuthUrl, appId } from "../api/login/config"
-import LoginApi from '../api/login/login'
+import { LarkAuthUrl, appId } from "@/api/login/config"
+import { loginByLarkCode } from "@/api/login"
+import { useLoginAction } from "@/store/login"
+import { ApiError } from "@/api/error"
 
-const { loginByCode } = LoginApi
 
 function Login() {
-    const { run } = useRequest(loginByCode, { manual: true })
+    let navigate = useNavigate()
+    const loginAction = useLoginAction()
+    const loginByCode = async (code: string) => {
+        await loginAction(loginByLarkCode({
+            code: code,
+        }))
+        navigate("/app")
+    }
+
+    const tryAutoLogin = async () => {
+        try {
+            await loginAction()
+            navigate("/app")
+        } catch (e: any) {
+            if (e.code !== ApiError.NOT_LOGIN) {
+                message.error(e.toString())
+            }
+        }
+    }
 
     useEffect(() => {
         const params = new URLSearchParams(location.search)
-        // （1） 判断第三方是否存有登录状态
-        // TODO
-        // （2） 没有=>判断是否在飞书内部
+        // 飞书内部免登录
         if (!!window.h5sdk) {
-            // 检测到JSAPI，飞书内部，默认免登录
             window.h5sdk.ready(() => {
                 tt.requestAuthCode({
                     appId: appId,
                     success(res: any) {
-                        run({ code: res.code })
+                        loginByCode(res?.code)
                     }
                 })
             })
-
-        } else {
-            // （4）不再飞书内部则展示UI，用户可选择跳转登录页登录或账号密码登录
         }
         if (params.get('code')) {
-            let res = run({
-                code: params.get('code')
-            })
-            if (res?.code === 0) {
-                // TODO：更新全局用户信息
-            }
+            loginByCode(params.get('code')!)
         } else {
-            // (1)
-            // 
-
+            tryAutoLogin()
         }
     }, [])
 

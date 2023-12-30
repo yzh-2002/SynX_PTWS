@@ -1,36 +1,46 @@
 import { useCallback } from 'react'
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
+import { getUserInfo } from '@/api/login'
+import { ApiError } from '@/api/error'
 
 export const userInfoState = atom({
     key: 'userInfo',
     default: {
         id: '',
         name: '',
-        avator: ''
+        avatar: ''
     }
 })
 
 export const isLoginSelector = selector({
     key: 'isLogin',
     get: ({ get }) => {
-        // const userInfo = get(userInfoState)
-        return false
+        const selfInfo = get(userInfoState)
+        return !!selfInfo.id
     }
 })
 
 export function useLoginAction() {
     const isLogin = useRecoilValue(isLoginSelector)
     const [userInfo, setUserInfo] = useRecoilState(userInfoState)
+    // 无论免登录还是手动授权登录，最终都要通过code登录
     return useCallback(async (loginApi?: Promise<void>) => {
         if (isLogin) return userInfo
         try {
             if (loginApi) {
                 await loginApi
             }
-            // let { user: userInfo } = await getUserInfo()
-            // setUserInfo(userInfo)
-        } catch (error) {
-
+            let { user } = await getUserInfo()
+            console.log(user)
+            setUserInfo(user)
+            return user
+        } catch (e: any) {
+            if (e.code === ApiError.NOT_LOGIN) {
+                const error = new ApiError(e, ApiError.NOT_LOGIN, '登录失败：服务错误，请联系管理员')
+                throw error
+            }else{
+                throw e
+            }
         }
     }, [isLogin, userInfo])
 }
