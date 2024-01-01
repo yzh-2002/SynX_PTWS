@@ -114,7 +114,7 @@ export function useApi<FnType extends (...v: any) => any>(fn: FnType) {
                             name: '',
                             avatar: ''
                         })
-                    }, 200)
+                    }, 2000)
                 } else {
                     const errorText = errorToString(e)
                     if (emitMessage) {

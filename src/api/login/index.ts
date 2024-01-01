@@ -19,3 +19,8 @@ export const getUserInfo = api<void, { user: UserInfoType }>({
         }
     }
 })
+
+export const test = api({
+    method: "GET",
+    url: '/test'
+})

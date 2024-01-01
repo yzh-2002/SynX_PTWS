@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { message, Button, Card } from "antd"
 
-import { LarkAuthUrl, appId } from "@/api/login/config"
+import { LarkAuthUrl, appId,loginUrl } from "@/api/login/config"
 import { loginByLarkCode } from "@/api/login"
 import { useLoginAction } from "@/store/login"
 import { ApiError } from "@/api/error"
@@ -10,19 +10,28 @@ import PageLoading from "./PageLoading"
 import SynXCopyright from "./SynXCopyright"
 import UESTCSceneUrl from "@/assets/uestc_scene.jpg"
 
+import { isLoginSelector } from "@/store/login"
+import { useRecoilValue } from "recoil"
+
 
 function Login() {
     let navigate = useNavigate()
     const loginAction = useLoginAction()
     const [loading, setLoading] = useState(true)
+    const isLogin = useRecoilValue(isLoginSelector)
     const loginByCode = async (code: string) => {
         const params = new URLSearchParams(location.search)
         try {
             await loginAction(loginByLarkCode({
                 code: code,
             }))
-            console.log(params.get("redirect"))
-            navigate(params.get("redirect") || "/app")
+            console.log(isLogin)
+            // TODO：此处应该根据用户信息进行跳转
+            if (isLogin) {
+                navigate(params.get("redirect") || "/app")
+            } else {
+                setLoading(false)
+            }
         } catch (e) {
             setLoading(false)
         }
@@ -32,8 +41,12 @@ function Login() {
         const params = new URLSearchParams(location.search)
         try {
             await loginAction()
-            console.log(params.get("redirect"))
-            navigate(params.get("redirect") || "/app")
+            console.log(isLogin)
+            if (isLogin) {
+                navigate(params.get("redirect") || "/app")
+            } else {
+                setLoading(false)
+            }
         } catch (e: any) {
             if (e.code !== ApiError.NOT_LOGIN) {
                 message.error(e.toString())
@@ -63,11 +76,12 @@ function Login() {
                 tryAutoLogin()
             }
         }
-    }, [])
+    }, [isLogin])
 
     const goLarkLoginPage = () => {
         const a = document.createElement('a')
         a.href = LarkAuthUrl
+        console.log(loginUrl)
         a.click()
     }
 

@@ -31,7 +31,6 @@ export function useLoginAction() {
                 await loginApi
             }
             let { user } = await getUserInfo()
-            console.log(user)
             setUserInfo(user)
             return user
         } catch (e: any) {

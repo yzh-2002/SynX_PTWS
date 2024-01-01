@@ -5,7 +5,7 @@ const bodyParser = require('koa-bodyparser')
 const session = require("koa-session")
 // const CryptoJS = require('crypto-js')
 
-const { getUserAccessToken, getUserInfo } = require("./login/handleLogin")
+const { getUserAccessToken, getUserInfo, test } = require("./login/handleLogin")
 
 function CreateMockServer({ port }) {
     const app = new koa()
@@ -26,6 +26,7 @@ function CreateMockServer({ port }) {
 
     router.post("/login", getUserAccessToken)
     router.get("/userinfo", getUserInfo)
+    router.get("/test", test)
     app.use(router.routes()).use(router.allowedMethods())
 
     const server = http.createServer(app.callback())

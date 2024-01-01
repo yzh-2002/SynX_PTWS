@@ -73,4 +73,12 @@ async function getUserInfo(ctx) {
 }
 
 
-module.exports = { getAppAccessToken, getUserAccessToken, getUserInfo }
+// 用于测试应用内部接口请求时登录态失效的情况
+async function test(ctx) {
+    ctx.body = {
+        code: -1,
+        msg: '测试用接口！'
+    }
+}
+
+module.exports = { getAppAccessToken, getUserAccessToken, getUserInfo, test }
