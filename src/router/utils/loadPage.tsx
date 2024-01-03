@@ -1,7 +1,7 @@
 import { ComponentType, ReactElement } from "react";
 import { useRecoilValue } from "recoil";
 import { isLoginSelector, userInfoState } from "../../store/login";
-import { Navigate } from "react-router-dom";
+import { Navigate, matchRoutes, useLocation } from "react-router-dom";
 import { Result } from "antd";
 import { ErrorBoundary } from "./ErrorBoundary";
 import PermissionDeny from "./PermissionDeny";
@@ -11,13 +11,15 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
         const openAccess = !!props?.openAccess
         const noRedirect = !!props?.noRedirect
         const isLogin = useRecoilValue(isLoginSelector)
+        // FIXME:当设置了basename时不能直接使用window.location.pathname(会包含basename)
+        const location =useLocation()
         if (openAccess || isLogin) {
             return (<Component {...props} />)
         } else {
             if (noRedirect) {
                 return <Navigate to={'/login'} />
             } else {
-                return <Navigate to={`/login?redirect=${encodeURIComponent(window.location.pathname)}`} />
+                return <Navigate to={`/login?redirect=${encodeURIComponent(location?.pathname)}`} />
             }
         }
     }

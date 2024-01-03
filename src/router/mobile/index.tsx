@@ -1,11 +1,11 @@
 import { lazy } from "react";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
-import { loadPage } from "./utils/loadPage";
+import { loadPage } from "../utils/loadPage";
 
 const LoginLayout = loadPage(lazy(() => import("@/layouts/LoginLayout")))
-const Login = loadPage(lazy(() => import("../views/App/Login")))
-const App = loadPage(lazy(() => import("../App")))
+const Login = loadPage(lazy(() => import("../../views/App/Login")))
+const App = loadPage(lazy(() => import("../../App")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))
 
 const router = createBrowserRouter([
@@ -41,6 +41,6 @@ const router = createBrowserRouter([
         path: "*",
         element: <NotFound />
     }
-])
+], { basename: '/mobile' })
 
 export default router

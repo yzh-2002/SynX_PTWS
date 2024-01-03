@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
 
-import router from '@/router/web'
+import router from '@/router/mobile'
 import "@/styles/taildwind.css"
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RecoilRoot>
-      <RouterProvider router={router} />
-    </RecoilRoot>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <RecoilRoot>
+            <RouterProvider router={router} />
+        </RecoilRoot>
+    </React.StrictMode>,
 )

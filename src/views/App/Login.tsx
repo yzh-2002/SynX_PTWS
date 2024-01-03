@@ -25,7 +25,6 @@ function Login() {
             await loginAction(loginByLarkCode({
                 code: code,
             }))
-            console.log(isLogin)
             // TODO：此处应该根据用户信息进行跳转
             if (isLogin) {
                 navigate(params.get("redirect") || "/app")
@@ -41,7 +40,6 @@ function Login() {
         const params = new URLSearchParams(location.search)
         try {
             await loginAction()
-            console.log(isLogin)
             if (isLogin) {
                 navigate(params.get("redirect") || "/app")
             } else {
