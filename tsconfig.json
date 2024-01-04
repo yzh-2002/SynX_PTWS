@@ -31,7 +31,9 @@
     //   "vite-plugin-svgr/client"
     // ]
   },
+  // 指明需要被tsc编译的文件或文件夹列表(顺序会影响结果)
   "include": [
+    "config/global.ts",
     "src"
   ],
   "references": [

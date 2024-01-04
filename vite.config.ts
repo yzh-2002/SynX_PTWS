@@ -4,16 +4,22 @@ import tailwindcss from "tailwindcss"
 import autoprefixer from "autoprefixer"
 import { join, resolve } from "path"
 import svgrPlugin from "vite-plugin-svgr"
+import legacy from "@vitejs/plugin-legacy"
 
 import { MOCK_PORT, PROXY, entryKey } from "./config/global"
-import { ViteMockApiPlugin } from "./mock"
+// 页面打包时记得注释掉
+// import { ViteMockApiPlugin } from "./mock"
 
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base:'./',
   plugins: [
+    legacy({
+      targets:['defaults','not IE 11']
+    }),
     react(),
-    ViteMockApiPlugin({ port: MOCK_PORT }),
+    // ViteMockApiPlugin({ port: MOCK_PORT }),
     svgrPlugin()
   ],
   resolve: {
@@ -30,6 +36,14 @@ export default defineConfig({
     postcss: {
       plugins: [tailwindcss, autoprefixer]
     }
+  },
+  build: {
+    outDir: resolve(__dirname, 'dist', entryKey),
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        [entryKey]: resolve(__dirname, 'src', 'pages', entryKey, 'index.html')
+      }
+    }
   }
-  // TODO：mpa，build时也需要特殊配置
 })

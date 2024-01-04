@@ -14,7 +14,7 @@ const proxy = {
         // TODO:根据环境不同此处需调整
         target: TARGET['DEV'],
         changeOrigian: true,
-        rewrite: (path) => path.replace(/^\/api/, "")
+        rewrite: (path:string) => path.replace(/^\/api/, "")
     }
 }
 

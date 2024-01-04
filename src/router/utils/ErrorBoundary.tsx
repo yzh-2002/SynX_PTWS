@@ -18,6 +18,7 @@ export class ErrorBoundary extends Component<{ fallback: ComponentType<{ error: 
         // 你同样可以将错误日志上报给服务器
         // logErrorToMyService(e, errorInfo)
         console.error('error', e)
+        console.log('errorInfo',errorInfo)
     }
 
     render() {

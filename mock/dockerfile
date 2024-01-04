@@ -1,0 +1,13 @@
+FROM node:slim
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install koa \
+    && npm install koa-router \
+    && npm install koa-bodyparser \
+    && npm install koa-session \
+    && npm install axios
+
+CMD ["node","server.js"]

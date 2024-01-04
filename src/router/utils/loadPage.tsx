@@ -1,7 +1,7 @@
 import { ComponentType, ReactElement } from "react";
 import { useRecoilValue } from "recoil";
 import { isLoginSelector, userInfoState } from "../../store/login";
-import { Navigate, matchRoutes, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { Result } from "antd";
 import { ErrorBoundary } from "./ErrorBoundary";
 import PermissionDeny from "./PermissionDeny";
@@ -27,7 +27,7 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
 
 function withAuthCheck(Component: ComponentType<any>, callback: ReactElement): ComponentType<any> {
     return (props: any) => {
-        const user = useRecoilValue(userInfoState)
+        useRecoilValue(userInfoState)
         // TODO:props中access字段和user的关系
         let hasAuth = true
         const openAccess = !!props?.openAccess
