@@ -3,7 +3,7 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { loadPage } from "../utils/loadPage";
 
-const LoginLayout = loadPage(lazy(() => import("@/layouts/LoginLayout")))
+const LoginLayout = loadPage(lazy(() => import("@/layouts/OpenAccessLayout")))
 const Login = loadPage(lazy(() => import("../../views/App/Login")))
 const App = loadPage(lazy(() => import("../../App")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))

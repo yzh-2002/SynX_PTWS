@@ -23,6 +23,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.1",
+    "react-vant": "^3.3.3",
     "recoil": "^0.7.7",
     "terser": "^5.26.0",
     "vite-plugin-svgr": "^4.2.0"

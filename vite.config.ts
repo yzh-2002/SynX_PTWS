@@ -8,18 +8,18 @@ import legacy from "@vitejs/plugin-legacy"
 
 import { MOCK_PORT, PROXY, entryKey } from "./config/global"
 // 页面打包时记得注释掉
-// import { ViteMockApiPlugin } from "./mock"
+import { ViteMockApiPlugin } from "./mock"
 
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base:'./',
+  base: './',
   plugins: [
     legacy({
-      targets:['defaults','not IE 11']
+      targets: ['defaults', 'not IE 11']
     }),
     react(),
-    // ViteMockApiPlugin({ port: MOCK_PORT }),
+    ViteMockApiPlugin({ port: MOCK_PORT }),
     svgrPlugin()
   ],
   resolve: {

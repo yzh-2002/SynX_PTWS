@@ -39,6 +39,6 @@ function CreateMockServer({ port }) {
 }
 
 // 本地开发时注释掉
-CreateMockServer({ port: 3001 })
+// CreateMockServer({ port: 3001 })
 
-// module.exports = CreateMockServer
+module.exports = CreateMockServer

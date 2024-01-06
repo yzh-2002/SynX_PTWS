@@ -2,11 +2,15 @@ import { lazy } from "react";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { loadPage } from "../utils/loadPage";
+import { withBreakpoint } from "@/utils/breakpoints";
 
-const LoginLayout = loadPage(lazy(() => import("@/layouts/LoginLayout")))
+const OpenAccessLayout = loadPage(lazy(() => import("@/layouts/OpenAccessLayout")))
 const Login = loadPage(lazy(() => import("../../views/App/Login")))
 const App = loadPage(lazy(() => import("../../App")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))
+
+let MobileLayout = loadPage(lazy(() => import("@/layouts/MobileLayout")))
+MobileLayout = withBreakpoint(MobileLayout)
 
 const router = createBrowserRouter([
     {
@@ -15,7 +19,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/login',
-        element: <LoginLayout {
+        element: <OpenAccessLayout {
             ...{
                 openAccess: true,
                 noRedirect: true
@@ -35,11 +39,28 @@ const router = createBrowserRouter([
     },
     {
         path: '/app',
-        element: <App />
+        element: <MobileLayout />,
+        children: [
+            {
+                index: true,
+                element: <App />,
+            }
+        ]
     },
     {
-        path: "*",
-        element: <NotFound />
+        path: "/",
+        element: <OpenAccessLayout {
+            ...{
+                openAccess: true,
+                noRedirect: true
+            }
+        } />,
+        children: [
+            {
+                path:'*',
+                element: <NotFound />
+            }
+        ]
     }
 ], { basename: '/mobile' })
 
