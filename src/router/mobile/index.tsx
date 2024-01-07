@@ -11,6 +11,7 @@ const NotFound = lazy(() => import("@/router/utils/NotFound"))
 
 let MobileLayout = loadPage(lazy(() => import("@/layouts/MobileLayout")))
 MobileLayout = withBreakpoint(MobileLayout)
+const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <App />,
+            },
+            {
+                path: "create-service",
+                element: <CreateService />
             }
         ]
     },
@@ -57,7 +62,7 @@ const router = createBrowserRouter([
         } />,
         children: [
             {
-                path:'*',
+                path: '*',
                 element: <NotFound />
             }
         ]
