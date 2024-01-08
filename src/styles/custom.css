@@ -1,0 +1,7 @@
+/* 覆盖antd的部分默认样式 */
+
+/* collapse禁用折叠时header样式修改 */
+.ant-collapse-item-disabled>.ant-collapse-header {
+    color: black !important;
+    cursor: pointer !important;
+}

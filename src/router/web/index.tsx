@@ -13,7 +13,8 @@ let AppLayout = loadPage(lazy(() => import("@/layouts/AppLayout")))
 AppLayout = withBreakpoint(AppLayout)
 
 //TODO:Test
-const Round = lazy(() => import("@/views/web/Components/Form/Round"))
+// const Round = lazy(() => import("@/views/web/Components/Form/Round"))
+const CollapseCard = lazy(() => import("@/views/web/Components/CollapseCard"))
 
 const router = createBrowserRouter([
     {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
             {
                 index: true,
                 // element: <App />,
-                element: <Round />
+                element: <CollapseCard />
             },
         ]
     },
