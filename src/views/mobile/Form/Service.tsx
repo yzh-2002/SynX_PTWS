@@ -1,8 +1,8 @@
-import { FormInstance } from "antd";
+import { FormInstance } from "react-vant";
 import { useMemo } from "react";
 import { Button, Input, Form, Picker } from "react-vant";
 
-function FormFooter(props: { form: FormInstance<any> }) {
+function FormFooter(props: { form: FormInstance }) {
     return (
         <div className="flex justify-end mr-2 mt-2">
             <Button>取消</Button>
@@ -28,7 +28,7 @@ export default function Service() {
         <div className="flex flex-col">
             <span>导师双选服务信息</span>
             {/* FIXME:form 类型问题 */}
-            <Form form={form} footer={<FormFooter form={form as any} />}>
+            <Form form={form} footer={<FormFooter form={form} />}>
                 <Form.Item name={'name'} label="双选业务名称" rules={[{ required: true, message: '请填写用户名' }]}>
                     <Input />
                 </Form.Item>

@@ -1,6 +1,16 @@
 # LarkWebAppDemo
 飞书网页应用开发示例
 
+## 目录结构
+
+1. views：页面组件
+   1. App：移动端与PC端通用组件
+   2. web
+   3. mobile
+2. ...
+
+
+
 ## Deploy
 
 1. 前端页面打包（记得注释掉[vite.config.ts](./vite.config.ts)中的`ViteMockApiPlugin`插件）:`yarn run build`
