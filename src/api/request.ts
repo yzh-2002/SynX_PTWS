@@ -8,8 +8,8 @@ import { message, notification } from "antd";
 import { ApiError, errorToString } from "./error";
 
 export const API_SUCCESS_CODE = 1
-export const API_MSG_KEY = 'msg'
-export const API_CODE_KEY = 'code'
+export const API_MSG_KEY = 'message'
+export const API_CODE_KEY = 'status'
 export const API_DATA_KEY = 'data'
 export const TimeoutMillisecond = 60 * 1000
 
@@ -110,9 +110,15 @@ export function useApi<FnType extends (...v: any) => any>(fn: FnType) {
                     emitNotification = false
                     setTimeout(() => {
                         setUserInfo({
-                            id: '',
-                            name: '',
-                            avatar: ''
+                            createdTime: NaN,
+                            creatorId: "",
+                            id: "",
+                            name: "",
+                            password: "",
+                            gender: NaN,
+                            mail: "",
+                            code: "",
+                            identity: "",
                         })
                     }, 2000)
                 } else {

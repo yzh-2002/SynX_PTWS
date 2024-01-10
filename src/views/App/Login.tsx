@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { message, Button, Card } from "antd"
 
-import { LarkAuthUrl, appId,loginUrl } from "@/api/login/config"
+import { LarkAuthUrl, appId, appSecret, loginUrl } from "@/api/login/config"
 import { loginByLarkCode } from "@/api/login"
 import { useLoginAction } from "@/store/login"
 import { ApiError } from "@/api/error"
@@ -23,6 +23,9 @@ function Login() {
         const params = new URLSearchParams(location.search)
         try {
             await loginAction(loginByLarkCode({
+                clientId: appId,
+                clientSecret: appSecret,
+                redirectUri: loginUrl,
                 code: code,
             }))
             // TODO：此处应该根据用户信息进行跳转
@@ -71,7 +74,9 @@ function Login() {
             if (params.get('code')) {
                 loginByCode(params.get('code')!)
             } else {
-                tryAutoLogin()
+                // TODO:本地测试不再自动登录
+                // tryAutoLogin()
+                setLoading(false)
             }
         }
     }, [isLogin])

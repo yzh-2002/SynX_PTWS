@@ -6,7 +6,6 @@ import { withBreakpoint } from "@/utils/breakpoints";
 
 const OpenAccessLayout = loadPage(lazy(() => import("@/layouts/OpenAccessLayout")))
 const Login = loadPage(lazy(() => import("../../views/App/Login")))
-const App = loadPage(lazy(() => import("../../App")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))
 
 let AppLayout = loadPage(lazy(() => import("@/layouts/AppLayout")))
@@ -14,7 +13,8 @@ AppLayout = withBreakpoint(AppLayout)
 
 //TODO:Test
 // const Round = lazy(() => import("@/views/web/Components/Form/Round"))
-const CollapseCard = lazy(() => import("@/views/web/Components/CollapseCard"))
+// const CollapseCard = lazy(() => import("@/views/web/Components/CollapseCard"))
+const AdminHomePage = lazy(() => import("@/views/web/Admin/HomePage"))
 
 const router = createBrowserRouter([
     {
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
             {
                 index: true,
                 // element: <App />,
-                element: <CollapseCard />
+                element: <AdminHomePage />
             },
         ]
     },

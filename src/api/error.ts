@@ -6,9 +6,11 @@ const ERROR_CODE = {
     EMPTY_RESPONSE: 1000,
     SERVER_ERROR: 1001,
     UPLOAD_ERROR: 1002,
+    PERMISSION_DENY: 1004,
     SERVER_DATA_FORMAT_ERROR: 1005,
     TIMEOUT: 1100,
     NOT_LOGIN: -1,
+    // 双选系统中未接入验证码
     INCORRECT_CAPTCHA: -3
 }
 
@@ -23,7 +25,8 @@ const ERROR_MESSAGE: ErrorMap = {
     [ERROR_CODE.NOT_LOGIN]: '登录过期，请重新登录',
     [ERROR_CODE.SERVER_DATA_FORMAT_ERROR]: '数据格式错误',
     [ERROR_CODE.TIMEOUT]: '服务器未响应: 访问超时',
-    [ERROR_CODE.INCORRECT_CAPTCHA]: '验证码错误'
+    [ERROR_CODE.INCORRECT_CAPTCHA]: '验证码错误',
+    [ERROR_CODE.PERMISSION_DENY]: '当前用户暂无权限'
 }
 
 export interface ApiErrorType extends Error {

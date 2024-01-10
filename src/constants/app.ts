@@ -8,9 +8,9 @@ interface RoleHomeType {
 
 // 后端返回用户身份字段
 export const Role = {
-    Admin: '',
-    Teacher: '',
-    Student: ''
+    Admin: 'admin',
+    Teacher: 'tutor',
+    Student: 'student'
 }
 
 // 不同身份登陆后跳转首页路由

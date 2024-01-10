@@ -1,24 +1,17 @@
 import { api } from "../request";
-import { UserInfoType } from "@/objects/user";
+import { UserInfoType, LoginParams } from "@/objects/user";
 
 
-export const loginByLarkCode = api<{ code: string }, void>({
+export const loginByLarkCode = api<LoginParams, void>({
     method: 'POST',
     url: '/login'
 })
 
-export const getUserInfo = api<void, { user: UserInfoType }>({
-    method: 'GET',
-    url: '/userinfo'
-}, (res: any) => {
-    return {
-        user: {
-            id: res?.open_id,
-            name: res?.name,
-            avatar: res?.avatar_url
-        }
-    }
-})
+// TODO:后端接口尚未开发
+// export const getUserInfo = api<void, { user: UserInfoType }>({
+//     method: 'GET',
+//     url: '/userinfo'
+// })
 
 export const test = api({
     method: "GET",
