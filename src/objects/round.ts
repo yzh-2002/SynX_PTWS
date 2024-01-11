@@ -16,13 +16,23 @@ export interface RoundCreateType {
     extension?: string
 }
 
+export interface SearchRoundParams {
+    description?: string;
+    id?: string;
+    name?: string;
+    round?: string;
+    stage?: string;
+    status?: string;
+    workId?: string;
+}
+
 // 查询轮次时后端返回数据
 export interface RoundReturnType {
     id: string;
     name: string;
     stage: string; //阶段 submit/verify-1|2|3
     isAtStage: boolean; //确实处于当前阶段还是处于空阶段（即上一阶段已结束而下一阶段未开始）
-    status: string; //notStart/end/onGoing
+    status: 'notStart' | 'end' | 'onGoing'; //notStart/end/onGoing
     round: number; //第几轮次
     duration: string; //JSON字符串
     fileMaxSize: number;

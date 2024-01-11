@@ -6,14 +6,14 @@ import { RoundCreateType, RoundReturnType } from "@/objects/round";
 
 // 轮次数据转换
 // 前端轮次数据类型（表单）
-interface RoundFormType {
+export interface RoundFormType {
     name: string,
     fileMaxSize: string,
     duration: Array<Array<Dayjs>>
 }
 
 // 前端轮次Table数据类型
-interface RoundTableItemType {
+export interface RoundTableItemType {
     taskName: string;
     taskOrder: number;
     startTime: string;

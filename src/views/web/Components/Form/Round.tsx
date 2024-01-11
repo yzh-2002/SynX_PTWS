@@ -1,24 +1,46 @@
-import { Form, Input, FormInstance, Button } from "antd";
+import { Form, Input, Button } from "antd";
 import { DatePicker } from "antd";
-
-import { convert_to_backend, disabledDate, autoSetNextTaskStartTime, RangePickerValidator } from "@/utils/roundForm";
+import { RoundFormType, disabledDate, autoSetNextTaskStartTime, RangePickerValidator, convert_to_backend } from "@/utils/roundForm";
 import { RangePickerProps } from "antd/es/date-picker";
 import { useEffect } from "react";
+import { useRequest } from "ahooks";
+import { useApi } from "@/api/request";
+import { addRound, updateRoundInfo } from "@/api/admin/round";
 
 const { RangePicker } = DatePicker
 
-// interface RoundPropType {
-//     form: FormInstance
-// }
+interface RoundFormPropType {
+    isEdit: boolean
+    roundInfo: RoundFormType | undefined
+    workId: string,
+    RoundId: string,
+    callback: () => void
+}
 
-export default function Round() {
-    // form应该由上层组件传
+export default function RoundForm(props: RoundFormPropType) {
+    const { loading: AddLoading, runAsync: add } = useRequest(useApi(addRound), { manual: true })
+    const { loading: UpdateLoading, runAsync: update } = useRequest(useApi(updateRoundInfo), { manual: true })
     const [form] = Form.useForm()
+    useEffect(() => {
+        if (props.isEdit) {
+            form.setFieldsValue(props.roundInfo)
+        } else {
+            // 轮次名称有默认值...
+        }
+    }, [props.isEdit])
     // 监听四个任务的时间
     const task_0 = Form.useWatch(['duration', 0], form)
+    const task_1 = Form.useWatch(['duration', 1], form)
+    const task_2 = Form.useWatch(['duration', 2], form)
     useEffect(() => {
         autoSetNextTaskStartTime(task_0, form, 1)
     }, [task_0])
+    useEffect(() => {
+        autoSetNextTaskStartTime(task_1, form, 2)
+    }, [task_1])
+    useEffect(() => {
+        autoSetNextTaskStartTime(task_2, form, 3)
+    }, [task_2])
 
     return (
         <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
@@ -40,23 +62,37 @@ export default function Round() {
             >
                 <RangePicker showTime format={'YYYY/MM/DD HH:mm'} />
             </Form.Item>
-            <Form.Item label="教师审核第一志愿起止时间" name={['duration', 1]}>
+            <Form.Item label="教师审核第一志愿起止时间" name={['duration', 1]}
+                rules={[{ required: true, validator: (_, v) => RangePickerValidator(_, v) }]}
+            >
                 <RangePicker showTime format={'YYYY/MM/DD HH:mm'}
                     disabledDate={disabledDate(task_0) as RangePickerProps['disabledDate']}
                 />
             </Form.Item>
-            <Form.Item label="教师审核第二志愿起止时间" name={['duration', 2]}>
+            <Form.Item label="教师审核第二志愿起止时间" name={['duration', 2]}
+                rules={[{ required: true, validator: (_, v) => RangePickerValidator(_, v) }]}
+            >
                 <RangePicker showTime format={'YYYY/MM/DD HH:mm'} />
             </Form.Item>
-            <Form.Item label="教师审核第三志愿起止时间" name={['duration', 3]}>
+            <Form.Item label="教师审核第三志愿起止时间" name={['duration', 3]}
+                rules={[{ required: true, validator: (_, v) => RangePickerValidator(_, v) }]}
+            >
                 <RangePicker showTime format={'YYYY/MM/DD HH:mm'} />
             </Form.Item>
             <Form.Item wrapperCol={{ span: 14, offset: 6 }}>
                 <Button type="primary" onClick={() => {
-                    form.validateFields().then((result) => {
-                        console.log(result)
+                    form.validateFields().then((result: RoundFormType) => {
+                        if (props.isEdit) {
+                            update({ id: props.RoundId, ...convert_to_backend(result) }).then(() => {
+                                props.callback()
+                            })
+                        } else {
+                            add({ workId: props.workId, processList: [convert_to_backend(result)] }).then(() => {
+                                props.callback()
+                            })
+                        }
                     })
-                }}>确认新建</Button>
+                }}>{props.isEdit ? '确认修改' : '确认新建'}</Button>
             </Form.Item>
         </Form>
     )

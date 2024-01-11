@@ -1,5 +1,5 @@
-import { Button, Collapse, CollapseProps, Tag } from "antd";
-import React, { ReactNode } from "react";
+import { Collapse, CollapseProps } from "antd";
+import { ReactNode } from "react";
 
 type ExtractContentType<T> = T extends (infer U)[] ? U : never
 
@@ -51,7 +51,7 @@ export default function CollapseCard(props: CollapseCardPropType) {
             bordered
             collapsible={props?.collapsible || 'icon'}
             expandIconPosition="end"
-            activeKey={props.content.key as string | undefined}
+            defaultActiveKey={props.activeKey}
             items={[{ ...props.content, label: Header }]}
         />
     )

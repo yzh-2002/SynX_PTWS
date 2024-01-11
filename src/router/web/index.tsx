@@ -16,6 +16,7 @@ AppLayout = withBreakpoint(AppLayout)
 // const CollapseCard = lazy(() => import("@/views/web/Components/CollapseCard"))
 const AdminHomePage = lazy(() => import("@/views/web/Admin/HomePage"))
 const TeachStuInfo = lazy(() => import("@/views/web/Admin/TeachStuInfo"))
+const RoundInfo = lazy(() => import("@/views/web/Admin/RoundInfo"))
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
                 index: true,
                 // element: <App />,
                 element: <AdminHomePage />
+            },
+            {
+                path: "round-info",
+                element: <RoundInfo />
             },
             {
                 path: "teach-stu-info",

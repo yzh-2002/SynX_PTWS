@@ -11,6 +11,8 @@ import { ServiceStatus, ServiceStatusColor } from "@/constants/service"
 import { ColumnsType } from "antd/es/table"
 import { useNavigate } from "react-router-dom"
 import { delWork, updateWorkStatus } from "@/api/admin/service"
+import { serviceInfo } from "@/store/service"
+import { useRecoilState } from "recoil"
 
 function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
     const navigator = useNavigate()
@@ -29,7 +31,7 @@ function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
                     onClick={() => {
                         switch (title) {
                             case '轮次配置':
-                                navigator(`/xxx?workId=${workInfo.id}&processId=${workInfo.processIds}`)
+                                navigator(`/app/round-info?workId=${workInfo.id}&processId=${workInfo.processIds}`)
                                 break;
                             case "师生导入":
                                 //TODO：实际获取师生时只需传递workId即可，grpIds的意义？？
@@ -50,9 +52,15 @@ function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
 }
 
 export default function HomePage() {
+    const [, setServiceInfo] = useRecoilState(serviceInfo)
     // 获取导师匹配服务
     const { data: workInfo, loading: workInfoLoading, refresh } = useRequest(useApi(getWorkInfo), {
-        defaultParams: [{ page: 1, size: 10 }]
+        defaultParams: [{ page: 1, size: 10 }],
+        // 默认应用只有一个服务
+        onSuccess: (data) => {
+            setServiceInfo(data?.workInfo?.length && data.workInfo[0] ||
+                { id: "", name: "", status: NaN, year: NaN })
+        }
     })
     const { loading: delLoading, runAsync: del } = useRequest(useApi(delWork), { manual: true })
     const { loading: updateStatusLoading, runAsync: updateStatus } = useRequest(useApi(updateWorkStatus), { manual: true })

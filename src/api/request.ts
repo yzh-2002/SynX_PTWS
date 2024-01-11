@@ -91,6 +91,7 @@ export function api<ParamsType = void, Return = void>(
     let func: (params: ParamsType) => Promise<Return>
     if (apiConfig instanceof Function) {
         // skip：无需处理，直接使用apiConfig请求函数
+        func = apiConfig
     } else {
         func = async function (params: ParamsType) {
             let res: any
@@ -98,6 +99,8 @@ export function api<ParamsType = void, Return = void>(
                 const paramKey = apiConfig.method.toString().toUpperCase() === 'GET'
                     ? 'params' : 'data'
                 // 针对不同请求类型设置对应参数字段
+                // 缺点：POST请求无法query和body参数一起使用
+                // 此时可直接传自定义函数实现，也即apiConfig instanceof Function的情况
                 const paramsConfig = apiConfig[paramKey]
                     ? { [paramKey]: { ...params, ...apiConfig[paramKey] } }
                     : { [paramKey]: params }
