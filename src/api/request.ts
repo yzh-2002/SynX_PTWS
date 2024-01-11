@@ -1,5 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { RequestConfig, ApiExecuteOptions } from "./interface";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { RequestConfig, ApiExecuteOptions, UploadRequestConfig } from "./interface";
 import { API_ENTRY } from "../../config/global"
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isLoginSelector, userInfoState } from "@/store/login";
@@ -33,6 +33,48 @@ export async function ajax<Return = void>(config: AxiosRequestConfig): Promise<R
     }
 }
 
+export function uploadFile<Return = void>({
+    url, method = 'POST', onUploadProgress, file, fileName, key = "file", params, extra = {}
+}: UploadRequestConfig): Promise<Return> {
+    let formdata = new FormData()
+    let fileKey = key || 'file'
+    formdata.append(fileKey, file, file instanceof File ? file.name : fileName || '')
+
+    Object.entries(extra).forEach(([k, v]) => {
+        formdata.append(k, v)
+    })
+
+    return ajax<Return>({
+        method: method,
+        url: url || '',
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+        // ajax用法基本等价于axios，故需要考虑不同类型参数的传递位置
+        // api函数封装后默认POST请求参数全部在data，GET请求参数全部在params
+        data: formdata,
+        params: params,
+        onUploadProgress
+    })
+}
+
+export async function downloadFile({ method = 'GET', ...args }: AxiosRequestConfig) {
+    const res = await ajax<AxiosResponse>({
+        ...args,
+        method: method,
+        responseType: 'blob'
+    })
+    const headers = res.headers || {}
+    const disposition = headers['content-disposition'] || ''
+    let filename
+    const group = /filename="([^"]*)"/.exec(disposition) || /filename=([^;]*)/.exec(disposition) // \\/:*?<>|"
+    if (group && group[1]) {
+        filename = group[1]
+        filename = filename.replace(new RegExp('[\\n\\t\\r]', 'g'), ' ')
+        filename = filename.replace(new RegExp('[\\\\/:*?<>|"]', 'g'), '_')
+    }
+    return { data: res.data, filename }
+}
 
 /**
  * 

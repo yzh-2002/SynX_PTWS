@@ -14,3 +14,14 @@ export interface ApiExecuteOptions {
     silent?: boolean, //错误不提示不报错
     success?: boolean | string, //成功提示
 }
+
+export interface UploadRequestConfig {
+    url: string,
+    method?: AxiosRequestConfig['method'],
+    onUploadProgress?: (event: any) => void,
+    params?: any,
+    file: Blob | File,
+    fileName?: string,
+    key?: string, // 文件的formdata key
+    extra?: object, // 其他的参数，键值对
+}

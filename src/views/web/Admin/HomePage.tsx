@@ -32,7 +32,8 @@ function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
                                 navigator(`/xxx?workId=${workInfo.id}&processId=${workInfo.processIds}`)
                                 break;
                             case "师生导入":
-                                navigator("")
+                                //TODO：实际获取师生时只需传递workId即可，grpIds的意义？？
+                                navigator(`/app/teach-stu-info?workId=${workInfo.id}&grpId=${workInfo.grpIds}`)
                                 break;
                             case "双选详情":
                                 navigator("")

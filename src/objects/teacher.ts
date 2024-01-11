@@ -1,4 +1,4 @@
-export interface TeacherType {
+export interface TeacherReturnType {
     allQuotas?: number; //全部名额
     code: string; //工号
     description?: string; //description是用户基础服务必须字段，在双选服务中不关心
@@ -13,7 +13,11 @@ export interface TeacherType {
     oddQuotas?: number; //剩余名额
     status: number; //
     teamName?: string;
+    id: string,
+    account: string
 }
+
+export type TeacherAddType = Omit<TeacherReturnType, 'id'>
 
 export interface SearchTeacherParams {
     code?: string;
