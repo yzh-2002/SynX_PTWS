@@ -80,19 +80,21 @@ export default function RoundForm(props: RoundFormPropType) {
                 <RangePicker showTime format={'YYYY/MM/DD HH:mm'} />
             </Form.Item>
             <Form.Item wrapperCol={{ span: 14, offset: 6 }}>
-                <Button type="primary" onClick={() => {
-                    form.validateFields().then((result: RoundFormType) => {
-                        if (props.isEdit) {
-                            update({ id: props.RoundId, ...convert_to_backend(result) }).then(() => {
-                                props.callback()
-                            })
-                        } else {
-                            add({ workId: props.workId, processList: [convert_to_backend(result)] }).then(() => {
-                                props.callback()
-                            })
-                        }
-                    })
-                }}>{props.isEdit ? '确认修改' : '确认新建'}</Button>
+                <Button type="primary"
+                    loading={props.isEdit ? UpdateLoading : AddLoading}
+                    onClick={() => {
+                        form.validateFields().then((result: RoundFormType) => {
+                            if (props.isEdit) {
+                                update({ id: props.RoundId, ...convert_to_backend(result) }).then(() => {
+                                    props.callback()
+                                })
+                            } else {
+                                add({ workId: props.workId, processList: [convert_to_backend(result)] }).then(() => {
+                                    props.callback()
+                                })
+                            }
+                        })
+                    }}>{props.isEdit ? '确认修改' : '确认新建'}</Button>
             </Form.Item>
         </Form>
     )

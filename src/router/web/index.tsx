@@ -17,6 +17,7 @@ AppLayout = withBreakpoint(AppLayout)
 const AdminHomePage = lazy(() => import("@/views/web/Admin/HomePage"))
 const TeachStuInfo = lazy(() => import("@/views/web/Admin/TeachStuInfo"))
 const RoundInfo = lazy(() => import("@/views/web/Admin/RoundInfo"))
+const MSInfo = lazy(() => import("@/views/web/Admin/MSInfo"))
 
 const router = createBrowserRouter([
     {
@@ -49,7 +50,6 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                // element: <App />,
                 element: <AdminHomePage />
             },
             {
@@ -59,6 +59,11 @@ const router = createBrowserRouter([
             {
                 path: "teach-stu-info",
                 element: <TeachStuInfo />
+            },
+            {
+                // mutual select
+                path: "ms-info",
+                element: <MSInfo />
             }
         ]
     },

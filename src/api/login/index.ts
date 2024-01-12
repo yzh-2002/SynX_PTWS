@@ -7,12 +7,13 @@ export const loginByLarkCode = api<LoginParams, void>({
     url: '/login'
 })
 
-// TODO:后端接口尚未开发
-// export const getUserInfo = api<void, { user: UserInfoType }>({
-//     method: 'GET',
-//     url: '/userinfo'
-// })
 
+export const getUserInfo = api<void, { userInfo: UserInfoType }>({
+    method: 'GET',
+    url: '/user/self-info'
+})
+
+// FIXME:前端本地Mock时测试接口
 export const test = api({
     method: "GET",
     url: '/test'

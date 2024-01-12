@@ -35,3 +35,29 @@ export interface SearchMSParams {
     twsRound?: string;
     workId?: string;
 }
+
+/**
+ * 上述获取的双选详情：
+ * 下面获取学生的双选详情是指：
+ */
+
+// TODO:没有分页？？
+export interface StuMSType {
+    choiceRank?: number;
+    status?: number;
+    stuCode?: string;
+    stuName?: string;
+    stuPhone?: string;
+    teaCode?: string;
+    teaName?: string;
+    twsRound?: number;
+}
+
+export interface SearchStuMSParams {
+    choiceRank?: number;
+    status?: number;
+    stuCode?: string;
+    teaCode?: string;
+    twsRound?: number;
+    workId: string;
+}

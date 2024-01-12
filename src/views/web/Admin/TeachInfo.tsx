@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react"
 
 import { TeacherReturnType } from "@/objects/teacher"
 import { getTeacherList } from "@/api/admin/teacher"
-import { SearchTeacherForm, TeacherForm } from "../Components/Form/Teacher"
+import { SearchTeacherForm, TeacherForm } from "../Components/Form/TeachInfo"
 
 
 

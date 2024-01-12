@@ -74,9 +74,7 @@ function Login() {
             if (params.get('code')) {
                 loginByCode(params.get('code')!)
             } else {
-                // TODO:本地测试不再自动登录
-                // tryAutoLogin()
-                setLoading(false)
+                tryAutoLogin()
             }
         }
     }, [isLogin])

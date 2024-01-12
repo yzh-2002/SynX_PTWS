@@ -38,7 +38,7 @@ function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
                                 navigator(`/app/teach-stu-info?workId=${workInfo.id}&grpId=${workInfo.grpIds}`)
                                 break;
                             case "双选详情":
-                                navigator("")
+                                navigator("/app/ms-info")
                                 break
                             default:
                                 break;
