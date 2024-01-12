@@ -77,7 +77,6 @@ export async function downloadFile({ method = 'GET', ...args }: AxiosRequestConf
 }
 
 /**
- * 
  * @param apiConfig 请求函数配置
  * @param callback 处理返回结果（e.g. ...）
  * @param preprocess 参数预处理（e.g. 设置默认值）

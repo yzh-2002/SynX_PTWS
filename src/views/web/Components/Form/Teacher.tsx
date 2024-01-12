@@ -2,10 +2,11 @@ import { Button, Form, Input, Select, Row, Col, Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons"
 import { DOWNLOAD_TEACH_URL } from "@/constants/app"
 import UploadCard from "../UploadCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
 import { useApi } from "@/api/request";
-import { addTeacherBatch } from "@/api/admin/teacher";
+import { addTeacherBatch, addTeacher, updateTeacher } from "@/api/admin/teacher";
+import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher";
 
 const jobTitleOption = [
     { label: '教授', value: '教授' },
@@ -20,16 +21,17 @@ interface SearchTeacherFormPropType {
     id: string,
     refresh: () => void,
     // 打开新增导师modal
-    addTeach: () => void
+    addTeach: () => void,
+    setParams: (v: SearchTeacherParams) => void
 }
 
-export function SearchTeacherForm({ id, refresh, addTeach }: SearchTeacherFormPropType) {
+export function SearchTeacherForm({ id, refresh, setParams, addTeach }: SearchTeacherFormPropType) {
     const [uploadModalOpen, setUploadModalOpen] = useState(false)
-    const { loading: UploadLoading, runAsync: upload } = useRequest(useApi(addTeacherBatch))
-
+    const { loading: UploadLoading, runAsync: upload } = useRequest(useApi(addTeacherBatch), { manual: true })
+    const [form] = Form.useForm()
     return (
         <>
-            <Form layout="inline">
+            <Form layout="inline" form={form}>
                 <Row gutter={[, 8]}>
                     <Col span={8}>
                         <Form.Item label="姓名" name={"name"}>
@@ -58,7 +60,11 @@ export function SearchTeacherForm({ id, refresh, addTeach }: SearchTeacherFormPr
                     </Col>
                     <Col span={8}>
                         <Form.Item>
-                            <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+                            <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                onClick={() => {
+                                    setParams(form.getFieldsValue(true))
+                                }}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -82,9 +88,22 @@ export function SearchTeacherForm({ id, refresh, addTeach }: SearchTeacherFormPr
     )
 }
 
-export function TeacherForm() {
+interface TeachFormPropType {
+    isEdit: boolean,
+    teachInfo?: TeacherReturnType,
+    id: string //workId
+    callback: () => void
+}
+
+export function TeacherForm(props: TeachFormPropType) {
+    const [form] = Form.useForm()
+    useEffect(() => {
+        props.isEdit && form.setFieldsValue(props.teachInfo)
+    }, [props.isEdit])
+    const { loading: AddLoading, runAsync: add } = useRequest(useApi(addTeacher), { manual: true })
+    const { loading: UpdateLoading, runAsync: update } = useRequest(useApi(updateTeacher), { manual: true })
     return (
-        <Form labelCol={{ span: 5 }} wrapperCol={{ span: 17 }}>
+        <Form labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} form={form}>
             <Form.Item label={'姓名'} name={'name'} rules={[{ required: true, message: '请输入姓名' }]}>
                 <Input placeholder={'请输入姓名'} />
             </Form.Item>
@@ -129,7 +148,25 @@ export function TeacherForm() {
                 <Input placeholder={'请输入团队名称'} />
             </Form.Item>
             <Form.Item wrapperCol={{ span: 13, offset: 5 }}>
-                <Button type="primary">确定新增</Button>
+                <Button type="primary" loading={props.isEdit ? UpdateLoading : AddLoading}
+                    onClick={() => {
+                        form.validateFields().then((result) => {
+                            if (props.isEdit) {
+                                // 修改时需要携带用户的id信息
+                                result['id'] = props.teachInfo?.id
+                                update({ workId: props.id, ...result }, {
+                                    message: true, success: '修改导师成功'
+                                }).then(() => { props.callback() })
+                            } else {
+                                add({ id: props.id, userlist: [result] }, {
+                                    message: true, success: '添加导师成功'
+                                }).then(() => {
+                                    props.callback()
+                                })
+                            }
+                        })
+                    }}
+                >{props.isEdit ? '确定修改' : '确定新增'}</Button>
             </Form.Item>
         </Form>
     )

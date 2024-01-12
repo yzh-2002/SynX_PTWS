@@ -3,15 +3,17 @@ import { useApi } from "@/api/request"
 import { Button, Modal, Popconfirm, Table, TableColumnsType } from "antd"
 import { useEffect, useMemo, useState } from "react"
 
-import { TeacherReturnType } from "@/objects/teacher"
-import { getTeacherList } from "@/api/admin/teacher"
-import { SearchTeacherForm, TeacherForm } from "../Components/Form/TeachInfo"
+import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher"
+import { getTeacherList, delTeacher } from "@/api/admin/teacher"
+import { SearchTeacherForm, TeacherForm } from "../Components/Form/Teacher"
 
 
 
 export default function TeachInfo({ id }: { id: string }) {
     const { loading: TeachLoading, data: TeachList, run: getTeach, refresh } = useRequest(useApi(getTeacherList), { manual: true })
-    useEffect(() => { getTeach({ id }) }, [])
+    const { loading: DelLoading, runAsync: delTeach } = useRequest(useApi(delTeacher), { manual: true })
+    const [params, SetParams] = useState<SearchTeacherParams>({})
+    useEffect(() => { getTeach({ id, ...params }) }, [params])
     const [teachModalOpen, setTeachModalOpen] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
     // 所选中的待修改信息的导师
@@ -44,9 +46,11 @@ export default function TeachInfo({ id }: { id: string }) {
                                 setTeachModalOpen(true)
                             }} >修改</Button>
                             <Popconfirm title={'确认删除该导师？'} okText={'确定'} cancelText={'取消'}
-                                onConfirm={() => { }}
+                                onConfirm={() => {
+                                    delTeach({ id, ids: [record.id] }, { message: true, success: '删除导师成功' }).then(() => refresh())
+                                }}
                             >
-                                <Button type="link" danger>删除</Button>
+                                <Button loading={DelLoading} type="link" danger>删除</Button>
                             </Popconfirm>
                         </>
                     )
@@ -60,6 +64,7 @@ export default function TeachInfo({ id }: { id: string }) {
             <SearchTeacherForm
                 id={id}
                 refresh={refresh}
+                setParams={SetParams}
                 addTeach={() => {
                     setIsEdit(false)
                     setTeachModalOpen(true)
@@ -82,7 +87,10 @@ export default function TeachInfo({ id }: { id: string }) {
                 destroyOnClose
                 footer={null}
             >
-                <TeacherForm />
+                <TeacherForm isEdit={isEdit} teachInfo={teachInfo} id={id} callback={() => {
+                    setTeachModalOpen(false)
+                    refresh()
+                }} />
             </Modal>
         </div>
     )
