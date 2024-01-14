@@ -8,6 +8,12 @@ interface RoleHomeType {
     [key: string]: string | undefined
 }
 
+export const RoleAlias = {
+    'admin': '管理员',
+    'tutor': '教师',
+    'student': '考生'
+}
+
 // 后端返回用户身份字段
 export const Role = {
     Admin: 'admin',

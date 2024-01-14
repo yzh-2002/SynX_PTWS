@@ -6,11 +6,13 @@ import { withBreakpoint } from "@/utils/breakpoints";
 
 const OpenAccessLayout = loadPage(lazy(() => import("@/layouts/OpenAccessLayout")))
 const Login = loadPage(lazy(() => import("../../views/App/Login")))
-const App = loadPage(lazy(() => import("../../App")))
+const App = loadPage(lazy(() => import("@/views/mobile/HomePage")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))
 
 let MobileLayout = loadPage(lazy(() => import("@/layouts/MobileLayout")))
 MobileLayout = withBreakpoint(MobileLayout)
+const ServiceList = lazy(() => import("@/views/mobile/Admin/Service"))
+const ServiceDetail = lazy(() => import("@/views/mobile/Admin/ServiceDetail"))
 const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
 
 const router = createBrowserRouter([
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <App />,
+            },
+            {
+                path: 'service',
+                element: <ServiceList />
+            },
+            {
+                path: 'service-detail',
+                element: <ServiceDetail />
             },
             {
                 path: "create-service",
