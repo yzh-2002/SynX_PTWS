@@ -33,13 +33,8 @@ export interface SearchMSParams {
     stuId?: string;
     teaId?: string;
     twsRound?: string;
-    workId?: string;
+    workId: string;
 }
-
-/**
- * 上述获取的双选详情：
- * 下面获取学生的双选详情是指：
- */
 
 // TODO:没有分页？？
 export interface StuMSType {

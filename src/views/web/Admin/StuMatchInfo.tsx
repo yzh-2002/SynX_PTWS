@@ -1,15 +1,30 @@
-import { Table } from "antd"
+import { Table, Tag } from "antd"
 import { SearchStuMatchForm } from "../Components/Form/StuMatch"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ColumnsType } from "antd/es/table"
+import { useRequest } from "ahooks"
+import { useApi } from "@/api/request"
+import { getStuMSInfo } from "@/api/admin/ms"
+import { SearchStuMSParams } from "@/objects/ms"
+import { MS_STATUS, MS_STATUS_COLOR } from "@/constants/ms"
 
-export default function StuMatchInfo() {
-    const StuMatchColumns = useMemo<ColumnsType<any>>(() => {
+export type StuMSParams = Omit<SearchStuMSParams, 'workId'>
+
+export default function StuMatchInfo({ id }: { id: string }) {
+    const { loading: StuMSInfoLoading, data: StuMSInfo, run: getStuMS } = useRequest(useApi(getStuMSInfo), { manual: true })
+    const [params, setParams] = useState<StuMSParams>({})
+    useEffect(() => { getStuMS({ ...params, workId: id }) }, [params])
+
+    const StuMatchColumns = useMemo<ColumnsType<StuMSParams>>(() => {
         return [
             { title: '学生姓名', dataIndex: 'stuName' },
             { title: '学生考号', dataIndex: 'stuCode' },
             { title: '电话号码', dataIndex: 'stuPhone' },
-            { title: '匹配状态', dataIndex: 'status' },
+            {
+                title: '匹配状态', dataIndex: 'status', render: (_, record) => {
+                    return <Tag color={MS_STATUS_COLOR[record?.status! + 1]}>{MS_STATUS[record?.status! + 1]}</Tag>
+                }
+            },
             { title: '对应轮次', dataIndex: 'twsRound' },
             { title: '对应志愿', dataIndex: 'choiceRank' },
             { title: '导师姓名', dataIndex: 'teaName' },
@@ -19,8 +34,8 @@ export default function StuMatchInfo() {
 
     return (
         <>
-            <SearchStuMatchForm />
-            <Table className="mt-2" columns={StuMatchColumns} />
+            <SearchStuMatchForm id={id} params={params} setParams={(v) => setParams({ ...params, ...v })} />
+            <Table className="mt-2" columns={StuMatchColumns} loading={StuMSInfoLoading} dataSource={StuMSInfo} />
         </>
     )
 }

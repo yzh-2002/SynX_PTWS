@@ -1,10 +1,19 @@
 import { Table } from "antd"
 import { SearchTeachMatchForm } from "../Components/Form/TeachMatch"
 import { ColumnsType } from "antd/es/table"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useRequest } from "ahooks"
+import { useApi } from "@/api/request"
+import { getMSInfo } from "@/api/admin/ms"
+import { SearchMSParams } from "@/objects/ms"
 
+export type MSParams = Omit<SearchMSParams, 'workId'>
 
-export default function TeachMatchInfo() {
+export default function TeachMatchInfo({ id }: { id: string }) {
+    const { loading: MSLoading, data: MSInfo, run: getMS } = useRequest(useApi(getMSInfo), { manual: true })
+    const [params, setParams] = useState<MSParams>({ page: 1, size: 5 })
+    useEffect(() => { getMS({ ...params, workId: id }) }, [params])
+
     const TeachMatchColumns = useMemo<ColumnsType<any>>(() => {
         return [
             { title: '学生姓名', dataIndex: 'stuName' },
@@ -22,8 +31,8 @@ export default function TeachMatchInfo() {
 
     return (
         <>
-            <SearchTeachMatchForm />
-            <Table className="mt-2" columns={TeachMatchColumns} />
+            <SearchTeachMatchForm id={id} params={params} setParams={(v) => setParams({ ...params, ...v })} />
+            <Table className="mt-2" columns={TeachMatchColumns} loading={MSLoading} dataSource={MSInfo?.twsInfo} />
         </>
     )
 }

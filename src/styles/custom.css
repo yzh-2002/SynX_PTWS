@@ -5,3 +5,10 @@
     color: black !important;
     cursor: pointer !important;
 }
+
+/* TODO：有无更好的解决方案？？ */
+/* 防止datepicker的高度过大，屏幕无法完全展示 */
+.ant-picker-panels {
+    height: 250px !important;
+    overflow-y: auto;
+}
