@@ -22,12 +22,17 @@ export async function ajax<Return = void>(config: AxiosRequestConfig): Promise<R
             timeout: TimeoutMillisecond
         }
         let res: any = await axios(config)
-        if (!(res.data instanceof Object) || res.data[API_CODE_KEY] != API_SUCCESS_CODE) {
-            // 如果为下载文件接口，返回的res.data为字节流，需要特殊处理
-            // Content-Disposition： inline & attachment
-            if (res?.headers?.['content-disposition']?.startsWith('attachment')) {
+        if (res.data instanceof Blob) {
+            let resInfo = await res.data.text()
+            try {
+                resInfo = JSON.parse(resInfo)
+            } catch (e: any) {
                 return res
             }
+            // 解析成功说明返回的不是文件而是错误提示信息，故throw出去
+            throw resInfo
+        }
+        if (!(res.data instanceof Object) || res.data[API_CODE_KEY] != API_SUCCESS_CODE) {
             throw res.data
         } else {
             return res.data[API_DATA_KEY]
@@ -68,7 +73,8 @@ export async function downloadFile({ method = 'GET', ...args }: AxiosRequestConf
         ...args,
         method: method,
         // FIXME：添加responseType会使得后端返回的错误提示信息也转为blob类型从而无法捕获错误信息
-        // responseType: 'blob'
+        // 故需要在ajax函数中处理
+        responseType: 'blob'
     })
     const headers = res.headers || {}
     const disposition = headers['content-disposition'] || ''
@@ -82,9 +88,11 @@ export async function downloadFile({ method = 'GET', ...args }: AxiosRequestConf
         fileName = decodeURIComponent(encodedFileName)
     }
     let blob = new Blob([res.data])
+    // let blob = res.data.blob()
     let url = window.URL.createObjectURL(blob);
     let a = document.createElement('a');
     document.body.appendChild(a);
+    a.href = url
     a.download = fileName;
     a.click();
     window.URL.revokeObjectURL(url);
@@ -164,7 +172,6 @@ export function useApi<FnType extends (...v: any) => any>(fn: FnType) {
                 }
                 resolve(res)
             }).catch((e: any) => {
-                console.log("error", e.code, isLogin)
                 if (e.code === ApiError.NOT_LOGIN) {
                     // 登录失效
                     message.error('登录失效，请重新登录')

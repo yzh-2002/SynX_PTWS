@@ -11,7 +11,7 @@ import TeachStuInfo from "./TeachStuInfo"
 export default function ServiceDetail() {
     const [serviceInfo, setServiceInfo] = useRecoilState(serviceInfoState)
     const { loading: workInfoLoading, run } = useRequest(useApi(getWorkInfo), {
-        defaultParams: [{ page: 1, size: 10 }],
+        manual: true,
         // 默认应用只有一个服务
         onSuccess: (data) => {
             setServiceInfo(data?.workInfo?.length && data.workInfo[0] ||
@@ -19,7 +19,7 @@ export default function ServiceDetail() {
         }
     })
     useEffect(() => {
-        !serviceInfo?.id && run()
+        !serviceInfo?.id && run({ page: 1, size: 10 })
     }, [])
     const TabContents = useMemo(() => {
         return [
