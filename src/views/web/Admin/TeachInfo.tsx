@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from "react"
 
 import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher"
 import { getTeacherList, delTeacher } from "@/api/admin/teacher"
-import { SearchTeacherForm, TeacherForm } from "../Components/Form/Teacher"
+import { SearchTeacherForm, TeacherForm } from "../Components/Form/TeachInfo"
+import { SearchSpecifyStuForm } from "../Components/Form/StuInfo"
 
 
 
@@ -15,8 +16,10 @@ export default function TeachInfo({ id }: { id: string }) {
     const [params, SetParams] = useState<SearchTeacherParams>({})
     useEffect(() => { getTeach({ id, ...params }) }, [params])
     const [teachModalOpen, setTeachModalOpen] = useState(false)
+    // 指定学生Modal
+    const [specifyStuModalOpen, setSpecifyStuModalOpen] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
-    // 所选中的待修改信息的导师
+    // 所选中的待修改信息的导师 & 同时也用于指定学生时获取所指老师id
     const [teachInfo, setTeachInfo] = useState<TeacherReturnType>()
     const TeachColumns = useMemo<TableColumnsType<TeacherReturnType>>(() => {
         return [
@@ -39,7 +42,10 @@ export default function TeachInfo({ id }: { id: string }) {
                 render: (_, record) => {
                     return (
                         <>
-                            <Button type="link">指定学生</Button>
+                            <Button type="link" onClick={() => {
+                                setTeachInfo(record)
+                                setSpecifyStuModalOpen(true)
+                            }}>指定学生</Button>
                             <Button type="link" onClick={() => {
                                 setTeachInfo(record)
                                 setIsEdit(true)
@@ -58,7 +64,14 @@ export default function TeachInfo({ id }: { id: string }) {
             },
         ]
     }, [])
-
+    const SpecifyStuColumns = useMemo<TableColumnsType<any>>(() => {
+        return [
+            { title: '姓名', dataIndex: 'name', key: 'name' },
+            { title: '考号', dataIndex: 'code', key: 'code' },
+            { title: '手机号', dataIndex: 'account', key: 'phone' },
+            { title: '操作', key: 'action' }
+        ]
+    }, [])
     return (
         <div>
             <SearchTeacherForm
@@ -91,6 +104,15 @@ export default function TeachInfo({ id }: { id: string }) {
                     setTeachModalOpen(false)
                     refresh()
                 }} />
+            </Modal>
+            <Modal
+                width={'80%'}
+                title='指定学生' open={specifyStuModalOpen}
+                onCancel={() => setSpecifyStuModalOpen(false)}
+                destroyOnClose footer={null}
+            >
+                <SearchSpecifyStuForm />
+                <Table columns={SpecifyStuColumns} />
             </Modal>
         </div>
     )

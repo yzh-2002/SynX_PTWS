@@ -6,6 +6,7 @@ import { isLoginSelector, userInfoState } from "@/store/login";
 import { useCallback } from "react";
 import { message, notification } from "antd";
 import { ApiError, errorToString } from "./error";
+import { useNavigate } from "react-router-dom";
 
 export const API_SUCCESS_CODE = 1
 export const API_MSG_KEY = 'message'
@@ -22,9 +23,13 @@ export async function ajax<Return = void>(config: AxiosRequestConfig): Promise<R
         }
         let res: any = await axios(config)
         if (!(res.data instanceof Object) || res.data[API_CODE_KEY] != API_SUCCESS_CODE) {
+            // 如果为下载文件接口，返回的res.data为字节流，需要特殊处理
+            // Content-Disposition： inline & attachment
+            if (res?.headers?.['content-disposition']?.startsWith('attachment')) {
+                return res
+            }
             throw res.data
         } else {
-
             return res.data[API_DATA_KEY]
         }
     } catch (e: any) {
@@ -62,18 +67,29 @@ export async function downloadFile({ method = 'GET', ...args }: AxiosRequestConf
     const res = await ajax<AxiosResponse>({
         ...args,
         method: method,
-        responseType: 'blob'
+        // FIXME：添加responseType会使得后端返回的错误提示信息也转为blob类型从而无法捕获错误信息
+        // responseType: 'blob'
     })
     const headers = res.headers || {}
     const disposition = headers['content-disposition'] || ''
-    let filename
-    const group = /filename="([^"]*)"/.exec(disposition) || /filename=([^;]*)/.exec(disposition) // \\/:*?<>|"
-    if (group && group[1]) {
-        filename = group[1]
-        filename = filename.replace(new RegExp('[\\n\\t\\r]', 'g'), ' ')
-        filename = filename.replace(new RegExp('[\\\\/:*?<>|"]', 'g'), '_')
+    // disposition内容采用了RFC 5987扩展语法，也即实际内容为：
+    // content-disposition: attachment;filename*=[encode]''[filename] 
+    // TODO：此处可根据content-type对应mime类型确定后缀
+    let fileName = '导师匹配管理系统下载文件.xlsx' //默认文件名
+    const matches = /filename\*=utf-8''(.+)/.exec(disposition)
+    if (matches && matches[1]) {
+        const encodedFileName = matches[1]
+        fileName = decodeURIComponent(encodedFileName)
     }
-    return { data: res.data, filename }
+    let blob = new Blob([res.data])
+    let url = window.URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    document.body.appendChild(a);
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a)
+    return res
 }
 
 /**
@@ -129,6 +145,7 @@ export function api<ParamsType = void, Return = void>(
 export function useApi<FnType extends (...v: any) => any>(fn: FnType) {
     const isLogin = useRecoilValue(isLoginSelector)
     const setUserInfo = useSetRecoilState(userInfoState)
+    const navigator = useNavigate()
     type DataType = Awaited<ReturnType<FnType>>
     return useCallback((params?: Parameters<FnType>[0] | null, options?: ApiExecuteOptions) => {
         let {
@@ -147,7 +164,8 @@ export function useApi<FnType extends (...v: any) => any>(fn: FnType) {
                 }
                 resolve(res)
             }).catch((e: any) => {
-                if (isLogin && e.code === ApiError.NOT_LOGIN) {
+                console.log("error", e.code, isLogin)
+                if (e.code === ApiError.NOT_LOGIN) {
                     // 登录失效
                     message.error('登录失效，请重新登录')
                     emitMessage = false
@@ -164,6 +182,7 @@ export function useApi<FnType extends (...v: any) => any>(fn: FnType) {
                             code: "",
                             identity: "",
                         })
+                        navigator("/login")
                     }, 2000)
                 } else {
                     const errorText = errorToString(e)

@@ -4,7 +4,7 @@ import { message, Button, Card } from "antd"
 
 import { LarkAuthUrl, appId, appSecret, loginUrl } from "@/api/login/config"
 import { loginByLarkCode } from "@/api/login"
-import { useLoginAction } from "@/store/login"
+import { useLoginAction, userInfoState } from "@/store/login"
 import { ApiError } from "@/api/error"
 import PageLoading from "./PageLoading"
 import SynXCopyright from "./SynXCopyright"
@@ -12,6 +12,7 @@ import UESTCSceneUrl from "@/assets/uestc_scene.jpg"
 
 import { isLoginSelector } from "@/store/login"
 import { useRecoilValue } from "recoil"
+import { RoleHome } from "@/constants/app"
 
 
 function Login() {
@@ -19,6 +20,7 @@ function Login() {
     const loginAction = useLoginAction()
     const [loading, setLoading] = useState(true)
     const isLogin = useRecoilValue(isLoginSelector)
+    const userInfo = useRecoilValue(userInfoState)
     const loginByCode = async (code: string) => {
         const params = new URLSearchParams(location.search)
         try {
@@ -28,9 +30,8 @@ function Login() {
                 redirectUri: loginUrl,
                 code: code,
             }))
-            // TODO：此处应该根据用户信息进行跳转
             if (isLogin) {
-                navigate(params.get("redirect") || "/app")
+                navigate(params.get("redirect") || `/app${RoleHome[userInfo?.identity]}`)
             } else {
                 setLoading(false)
             }
@@ -44,7 +45,7 @@ function Login() {
         try {
             await loginAction()
             if (isLogin) {
-                navigate(params.get("redirect") || "/app")
+                navigate(params.get("redirect") || `/app${RoleHome[userInfo?.identity]}`)
             } else {
                 setLoading(false)
             }
@@ -82,7 +83,6 @@ function Login() {
     const goLarkLoginPage = () => {
         const a = document.createElement('a')
         a.href = LarkAuthUrl
-        console.log(loginUrl)
         a.click()
     }
 

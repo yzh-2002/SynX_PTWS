@@ -67,17 +67,31 @@ export default function RoundForm(props: RoundFormPropType) {
             >
                 <RangePicker showTime format={'YYYY/MM/DD HH:mm'}
                     disabledDate={disabledDate(task_0) as RangePickerProps['disabledDate']}
+                // onChange={() => {
+                //     const preTask = form.getFieldValue(['duration', 0])
+                //     autoSetNextTaskStartTime(preTask, form, 1)
+                // }}
                 />
             </Form.Item>
             <Form.Item label="教师审核第二志愿起止时间" name={['duration', 2]}
                 rules={[{ required: true, validator: (_, v) => RangePickerValidator(_, v) }]}
             >
-                <RangePicker showTime format={'YYYY/MM/DD HH:mm'} />
+                <RangePicker showTime format={'YYYY/MM/DD HH:mm'}
+                // onChange={() => {
+                //     const preTask = form.getFieldValue(['duration', 1])
+                //     autoSetNextTaskStartTime(preTask, form, 2)
+                // }}
+                />
             </Form.Item>
             <Form.Item label="教师审核第三志愿起止时间" name={['duration', 3]}
                 rules={[{ required: true, validator: (_, v) => RangePickerValidator(_, v) }]}
             >
-                <RangePicker showTime format={'YYYY/MM/DD HH:mm'} />
+                <RangePicker showTime format={'YYYY/MM/DD HH:mm'}
+                // onChange={() => {
+                //     const preTask = form.getFieldValue(['duration', 2])
+                //     autoSetNextTaskStartTime(preTask, form, 3)
+                // }}
+                />
             </Form.Item>
             <Form.Item wrapperCol={{ span: 14, offset: 6 }}>
                 <Button type="primary"

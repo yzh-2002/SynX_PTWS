@@ -1,9 +1,9 @@
-import { serviceInfoAsync } from "@/store/service"
-import { useRecoilValue } from "recoil"
+import { serviceInfoState } from "@/store/service"
+import { useRecoilState } from "recoil"
 import CollapseCard, { CollapseCardPropType } from "../Components/CollapseCard"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
-import { getRoundList, updateRoundStatus } from "@/api/admin/round"
+import { getRoundList, updateRoundStatus, delRound } from "@/api/admin/round"
 import PageLoading from "@/views/App/PageLoading"
 import { Button, Empty, Modal, Popconfirm, Table, Tag } from "antd"
 import { RoundReturnType } from "@/objects/round"
@@ -11,7 +11,8 @@ import { ROUND_STATUS, ROUND_STATUS_COLOR } from "@/constants/round"
 import { ColumnsType } from "antd/es/table"
 import { convert_to_table, convert_to_form, RoundTableItemType } from "@/utils/roundForm"
 import RoundForm from "../Components/Form/Round"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { getWorkInfo } from "@/api/admin/service"
 
 function RoundConfigTable({ round }: { round: RoundReturnType }) {
     const columns: ColumnsType<RoundTableItemType> = [
@@ -26,9 +27,21 @@ function RoundConfigTable({ round }: { round: RoundReturnType }) {
 
 
 export default function RoundInfo() {
-    const service = useRecoilValue(serviceInfoAsync)
+    const [serviceInfo, setServiceInfo] = useRecoilState(serviceInfoState)
+    const { loading: workInfoLoading, run } = useRequest(useApi(getWorkInfo), {
+        defaultParams: [{ page: 1, size: 10 }],
+        // 默认应用只有一个服务
+        onSuccess: (data) => {
+            setServiceInfo(data?.workInfo?.length && data.workInfo[0] ||
+                { id: "", name: "", status: NaN, year: NaN })
+        }
+    })
+    useEffect(() => {
+        !serviceInfo?.id && run()
+    }, [])
     const { loading: RoundLoading, data: RoundList, refresh } = useRequest(useApi(getRoundList))
     const { loading: UpdateStatusLoading, runAsync: updateStatus } = useRequest(useApi(updateRoundStatus), { manual: true })
+    const { loading: DelLoading, runAsync: delRoundFun } = useRequest(useApi(delRound), { manual: true })
     const GenerateCardConfig = (round: RoundReturnType, idx: number): CollapseCardPropType => {
         return {
             content: {
@@ -64,7 +77,16 @@ export default function RoundInfo() {
                                     setRound(round)
                                     setModalOpen(true)
                                 }}>编辑</Button>
-                                <Button danger>删除</Button>
+                                <Popconfirm title={'确认要删除该轮次？一旦删除，将无法恢复，请确定删除！'}
+                                    okText={'确定'} cancelText={'取消'} onConfirm={() => {
+                                        delRoundFun({ ids: [round.id] }, { message: true, success: '删除轮次成功' }).then(() => {
+                                            refresh()
+                                        })
+                                    }}
+
+                                >
+                                    <Button danger loading={DelLoading}>删除</Button>
+                                </Popconfirm>
                             </>
                         }
                     </div>
@@ -77,30 +99,31 @@ export default function RoundInfo() {
     const [isEdit, setIsEdit] = useState(false)
 
     return (
-        <div className="w-4/5 m-auto mt-2 flex flex-col items-center">
-            <span className=" text-lg font-bold">{service.name}</span>
-            {
-                RoundLoading ? <PageLoading /> : (
-                    !!RoundList?.length ? (
-                        RoundList.map((round, idx) => <CollapseCard key={round.id} {...GenerateCardConfig(round, idx)} />)
-                    ) : <Empty description="暂无数据" />
-                )
-            }
-            <Button type="primary" className="mt-2" onClick={() => {
-                setIsEdit(false)
-                setModalOpen(true)
-            }}>创建导师匹配轮次</Button>
-            <Modal width={850} title={isEdit ? '修改信息' : '创建轮次'} open={modalOpen}
-                onCancel={() => setModalOpen(false)} destroyOnClose footer={null}
-            >
-                <RoundForm workId={service.id} RoundId={round?.id!}
-                    isEdit={isEdit} roundInfo={round && convert_to_form(round)}
-                    callback={() => {
-                        setModalOpen(false)
-                        refresh()
-                    }}
-                />
-            </Modal>
-        </div >
+        workInfoLoading ? <PageLoading /> :
+            <div className="w-4/5 m-auto mt-2 flex flex-col items-center">
+                <span className=" text-lg font-bold">{serviceInfo.name}</span>
+                {
+                    RoundLoading ? <PageLoading /> : (
+                        !!RoundList?.length ? (
+                            RoundList.map((round, idx) => <CollapseCard key={round.id} {...GenerateCardConfig(round, idx)} />)
+                        ) : <Empty description="暂无数据" />
+                    )
+                }
+                <Button type="primary" className="mt-2" onClick={() => {
+                    setIsEdit(false)
+                    setModalOpen(true)
+                }}>创建导师匹配轮次</Button>
+                <Modal width={850} title={isEdit ? '修改信息' : '创建轮次'} open={modalOpen}
+                    onCancel={() => setModalOpen(false)} destroyOnClose footer={null}
+                >
+                    <RoundForm workId={serviceInfo.id} RoundId={round?.id!}
+                        isEdit={isEdit} roundInfo={round && convert_to_form(round)}
+                        callback={() => {
+                            setModalOpen(false)
+                            refresh()
+                        }}
+                    />
+                </Modal>
+            </div >
     )
 }

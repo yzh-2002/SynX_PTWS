@@ -24,7 +24,7 @@ export const addRound = api<{ workId: string } & { processList: RoundCreateType[
         })
 )
 
-export const delRound = api<{ id: string }>({
+export const delRound = api<{ ids: string[] }>({
     url: '/process?_method=DELETE',
     method: 'POST'
 })

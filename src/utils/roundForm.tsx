@@ -44,7 +44,7 @@ export function convert_to_form(v: RoundReturnType): RoundFormType {
         duration: []
     }
     const duration = JSON.parse(v.duration)
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i <= 4; i++) {
         result.duration[i - 1] = [
             dayjs(duration[`start_${i}`]),
             dayjs(duration[`end_${i}`])
@@ -98,15 +98,15 @@ export function autoSetNextTaskStartTime(preTask: Array<Dayjs> | undefined,
     const curTask = form.getFieldValue(['duration', taskOrder])
     if (preTask && preTask[1] && !curTask) {
         // 当前任务为空时，可直接赋值
-        form.setFieldValue(['duration', taskOrder], [preTask[1], null])
+        form.setFieldValue(['duration', taskOrder], [preTask[1], undefined])
     } else if (curTask && curTask[1]) {
         // 当前任务不为空，且终止时间存在
         // 如果上一个任务的终止时间小于当前任务终止时间，则只需更新当前任务初始时间
-        if (preTask && preTask[1].valueOf() <= curTask[1].valueOf()) {
+        if (preTask && preTask[1]?.valueOf() <= curTask[1]?.valueOf()) {
             form.setFieldValue(['duration', taskOrder], [preTask[1], curTask[1]])
         } else if (preTask) {
             // 否则更新当前任务初始时间会破坏（终止>起始）的原则，需要将当前任务终止时间置空
-            form.setFieldValue(['duration', taskOrder], [preTask[1], null])
+            form.setFieldValue(['duration', taskOrder], [preTask[1], undefined])
         }
     }
 }

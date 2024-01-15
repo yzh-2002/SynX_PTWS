@@ -6,6 +6,18 @@ export const getStuList = api<{ id: string } & SearchStudentParams, { total: num
     method: 'GET'
 })
 
+// 获取尚未选择导师的学生，用于管理端为老师指定学生
+export const getNotSelectStuList = api<{ workId: string }>({
+    url: '/twsInfo/student/notSelect',
+    method: 'GET'
+})
+
+// 管理员为教师指定学生
+export const specifyStu = api({
+    url: '/twsInfo/select',
+    method: 'POST'
+})
+
 export const addStuBatch = ({ id, file }: { id: string, file: File }) => {
     return uploadFile({
         url: '/work/student/excel',

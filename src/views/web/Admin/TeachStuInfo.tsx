@@ -1,18 +1,39 @@
 import { Tabs } from "antd"
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import TeachInfo from "./TeachInfo"
 import StuInfo from "./StuInfo"
-import { useRecoilValue } from "recoil"
-import { serviceInfoAsync } from "@/store/service"
+import { useRecoilState } from "recoil"
+import { serviceInfoState } from "@/store/service"
+import { useRequest } from "ahooks"
+import { useApi } from "@/api/request"
+import { getWorkInfo } from "@/api/admin/service"
+import PageLoading from "@/views/App/PageLoading"
 
 export default function TeachStuInfo() {
-    const service = useRecoilValue(serviceInfoAsync)
+    const [serviceInfo, setServiceInfo] = useRecoilState(serviceInfoState)
+    const { loading: workInfoLoading, run } = useRequest(useApi(getWorkInfo), {
+        defaultParams: [{ page: 1, size: 10 }],
+        // 默认应用只有一个服务
+        onSuccess: (data) => {
+            setServiceInfo(data?.workInfo?.length && data.workInfo[0] ||
+                { id: "", name: "", status: NaN, year: NaN })
+        }
+    })
+    useEffect(() => {
+        !serviceInfo?.id && run()
+    }, [])
     const menuItems = useMemo(() => {
         return [
-            { label: '导师详情', key: 'teacher-detail', children: <TeachInfo id={service.id} /> },
-            { label: '学生详情', key: 'student-detail', children: <StuInfo id={service.id} /> },
+            {
+                label: '导师详情', key: 'teacher-detail', children:
+                    workInfoLoading ? <PageLoading /> : <TeachInfo id={serviceInfo.id} />
+            },
+            {
+                label: '学生详情', key: 'student-detail', children:
+                    workInfoLoading ? <PageLoading /> : <StuInfo id={serviceInfo.id} />
+            },
         ]
-    }, [])
+    }, [workInfoLoading])
 
     return (
         <Tabs

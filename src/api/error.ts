@@ -65,7 +65,7 @@ export class ApiError extends Error implements ApiErrorType {
             writable: false,
             enumerable: false,
         })
-
+      
         const codeIsNaN = typeof code === 'number' && isNaN(code)
         switch (true) {
             case !(e instanceof Object):

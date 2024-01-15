@@ -126,3 +126,35 @@ export function StuInfoForm(props: StuFormPropType) {
         </Form>
     )
 }
+
+// 管理端-师生导入-导师详情-指定学生
+export function SearchSpecifyStuForm() {
+    const [form] = Form.useForm()
+
+    return (
+        <Form form={form}>
+            <Row gutter={[8, 0]}>
+                <Col span={7}>
+                    <Form.Item label='姓名'>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={7}>
+                    <Form.Item label='考号'>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={7}>
+                    <Form.Item label='手机号'>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={3}>
+                    <Form.Item>
+                        <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+                    </Form.Item>
+                </Col>
+            </Row>
+        </Form>
+    )
+}

@@ -11,13 +11,12 @@ const NotFound = lazy(() => import("@/router/utils/NotFound"))
 let AppLayout = loadPage(lazy(() => import("@/layouts/AppLayout")))
 AppLayout = withBreakpoint(AppLayout)
 
-//TODO:Test
-// const Round = lazy(() => import("@/views/web/Components/Form/Round"))
-// const CollapseCard = lazy(() => import("@/views/web/Components/CollapseCard"))
-const AdminHomePage = lazy(() => import("@/views/web/Admin/HomePage"))
+const AdminHomePage = loadPage(lazy(() => import("@/views/web/Admin/HomePage")))
 const TeachStuInfo = lazy(() => import("@/views/web/Admin/TeachStuInfo"))
 const RoundInfo = lazy(() => import("@/views/web/Admin/RoundInfo"))
 const MSInfo = lazy(() => import("@/views/web/Admin/MSInfo"))
+
+const StuHomePage = loadPage(lazy(() => import("@/views/web/Student/HomePage")))
 
 const router = createBrowserRouter([
     {
@@ -46,11 +45,11 @@ const router = createBrowserRouter([
     },
     {
         path: '/app',
-        element: <AppLayout />,
+        element: <AppLayout openAccess={true} />,
         children: [
             {
-                index: true,
-                element: <AdminHomePage />
+                path: 'admin-home',
+                element: <AdminHomePage access={'admin'} />
             },
             {
                 path: "round-info",
@@ -64,6 +63,11 @@ const router = createBrowserRouter([
                 // mutual select
                 path: "ms-info",
                 element: <MSInfo />
+            },
+            // 学生端
+            {
+                path: 'stu-home',
+                element: <StuHomePage access="student" />
             }
         ]
     },

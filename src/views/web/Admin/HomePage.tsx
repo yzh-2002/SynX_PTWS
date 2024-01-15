@@ -11,7 +11,7 @@ import { ServiceStatus, ServiceStatusColor } from "@/constants/service"
 import { ColumnsType } from "antd/es/table"
 import { useNavigate } from "react-router-dom"
 import { delWork, updateWorkStatus } from "@/api/admin/service"
-import { serviceInfo } from "@/store/service"
+import { serviceInfoState } from "@/store/service"
 import { useRecoilState } from "recoil"
 
 function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
@@ -51,7 +51,7 @@ function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
 }
 
 export default function HomePage() {
-    const [, setServiceInfo] = useRecoilState(serviceInfo)
+    const [, setServiceInfo] = useRecoilState(serviceInfoState)
     // 获取导师匹配服务
     const { data: workInfo, loading: workInfoLoading, refresh } = useRequest(useApi(getWorkInfo), {
         defaultParams: [{ page: 1, size: 10 }],
@@ -85,7 +85,7 @@ export default function HomePage() {
                 tag: <Tag color={ServiceStatusColor[work.status]}>{ServiceStatus[work.status]}</Tag>,
                 action: (
                     !work.status ?
-                        <Popconfirm placement="bottom" title={'确定要变更工作状态至已发布？'}
+                        <Popconfirm placement="bottom" title={'确定要变更工作状态至未发布？'}
                             okText="确定" cancelText="取消" onConfirm={() => {
                                 updateStatus({ id: work.id }, { message: true, success: '导师匹配服务撤回成功' }).then(() => refresh())
                             }}

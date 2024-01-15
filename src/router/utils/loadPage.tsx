@@ -12,7 +12,7 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
         const noRedirect = !!props?.noRedirect
         const isLogin = useRecoilValue(isLoginSelector)
         // FIXME:当设置了basename时不能直接使用window.location.pathname(会包含basename)
-        const location =useLocation()
+        const location = useLocation()
         if (openAccess || isLogin) {
             return (<Component {...props} />)
         } else {
@@ -27,14 +27,14 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
 
 function withAuthCheck(Component: ComponentType<any>, callback: ReactElement): ComponentType<any> {
     return (props: any) => {
-        useRecoilValue(userInfoState)
+        const userInfo = useRecoilValue(userInfoState)
         // TODO:props中access字段和user的关系
         let hasAuth = true
         const openAccess = !!props?.openAccess
         if (openAccess) {
             hasAuth = true
         } else {
-
+            hasAuth = userInfo.identity === props?.access
         }
         if (hasAuth) {
             return <Component {...props} />
