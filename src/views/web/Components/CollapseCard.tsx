@@ -28,7 +28,7 @@ function CollapseCardHeader(props: CollapseCardHeaderPropType) {
                     <span className=" font-bold text-xl mr-1">{props.title}</span>
                     {props?.tag}
                 </div>
-                {props?.appendix}
+                <div className=" text-[#909398]">{props?.appendix}</div>
             </div>
             {props?.action}
         </div>

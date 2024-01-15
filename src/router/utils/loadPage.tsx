@@ -19,7 +19,8 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
             if (noRedirect) {
                 return <Navigate to={'/login'} />
             } else {
-                return <Navigate to={`/login?redirect=${encodeURIComponent(location?.pathname)}`} />
+                return <Navigate
+                    to={`/login?redirect=${encodeURIComponent(`${location?.pathname}${window.location.search}`)}`} />
             }
         }
     }

@@ -17,6 +17,7 @@ const RoundInfo = lazy(() => import("@/views/web/Admin/RoundInfo"))
 const MSInfo = lazy(() => import("@/views/web/Admin/MSInfo"))
 
 const StuHomePage = loadPage(lazy(() => import("@/views/web/Student/HomePage")))
+const StuTask = loadPage(lazy(() => import("@/views/web/Student/Task")))
 
 const router = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
             {
                 path: 'stu-home',
                 element: <StuHomePage access="student" />
+            },
+            {
+                path: 'stu-task',
+                element: <StuTask access='student' />
             }
         ]
     },
