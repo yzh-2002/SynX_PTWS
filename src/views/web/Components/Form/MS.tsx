@@ -2,7 +2,7 @@ import { Form, Row, Col, Input, Select, Button } from "antd";
 import { MS_STATUS } from "@/constants/ms";
 import { SearchOutlined } from "@ant-design/icons"
 
-export function SearchMSRsultForm() {
+export function SearchStuMSRsultForm() {
     const [form] = Form.useForm()
     return (
         <Form form={form} layout="inline">
@@ -34,6 +34,44 @@ export function SearchMSRsultForm() {
                                 label: status, value: idx - 1
                             }))}
                         />
+                    </Form.Item>
+                </Col>
+                <Col span={2}>
+                    <Form.Item>
+                        <Button type="primary" shape="circle" icon={<SearchOutlined />} onClick={() => {
+
+                        }} />
+                    </Form.Item>
+                </Col>
+            </Row>
+        </Form>
+    )
+}
+
+export function SearchTeachMSRsultForm() {
+    const [form] = Form.useForm()
+
+    return (
+        <Form layout="inline" form={form}>
+            <Row gutter={[, 8]}>
+                <Col span={8}>
+                    <Form.Item label="学生考号" name={'stuCode'}>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item label='双选轮次' name={'twsRound'}>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item label='第几志愿' name={'choiceRank'}>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item label='双选状态' name={'status'}>
+                        <Input />
                     </Form.Item>
                 </Col>
                 <Col span={2}>

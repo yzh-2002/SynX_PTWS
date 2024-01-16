@@ -19,6 +19,9 @@ const MSInfo = lazy(() => import("@/views/web/Admin/MSInfo"))
 const StuHomePage = loadPage(lazy(() => import("@/views/web/Student/HomePage")))
 const StuTask = loadPage(lazy(() => import("@/views/web/Student/Task")))
 
+const TeachHomePage = loadPage(lazy(() => import("@/views/web/Teacher/HomePage")))
+const TeachTask = loadPage(lazy(() => import("@/views/web/Teacher/Task")))
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -73,6 +76,15 @@ const router = createBrowserRouter([
             {
                 path: 'stu-task',
                 element: <StuTask access='student' />
+            },
+            // 教师端
+            {
+                path: 'tutor-home',
+                element: <TeachHomePage access="teacher" />
+            },
+            {
+                path: 'teach-task',
+                element: <TeachTask access='teacher' />
             }
         ]
     },

@@ -22,25 +22,27 @@ export interface SelectedTutorType {
     workId: string;
 }
 
+interface ProcessInfoType {
+    createdTime: number;
+    creatorId: string;
+    description: string;
+    duration: string;
+    extension: string;
+    fileMaxSize: number;
+    id: string;
+    lastOperatorId: string;
+    lastUpdateTime: number;
+    name: string;
+    round: number;
+    stage: string;
+    status: string;
+    workId: string;
+}
+
 // 学生获取任务详情信息
 export interface StuTaskReturnType {
     // 当前任务所属轮次信息
-    processInfo: {
-        createdTime: number;
-        creatorId: string;
-        description: string;
-        duration: string;
-        extension: string;
-        fileMaxSize: number;
-        id: string;
-        lastOperatorId: string;
-        lastUpdateTime: number;
-        name: string;
-        round: number;
-        stage: string;
-        status: string;
-        workId: string;
-    },
+    processInfo: ProcessInfoType
     //学生可选择导师列表，与其他信息耦合，此处不适用，单独从另一接口返回
     tutorInfo: any,
     // TODO：该字段实际未使用
@@ -79,4 +81,52 @@ export interface StuChooseTeachType {
     status: number;
     teamName: string;
     workId: string;
+}
+
+export interface StuInfoType {
+    account: string,
+    code: string,
+    description?: string,
+    extension?: string,
+    fileUrl: string,
+    gender?: number,
+    id: string,
+    identity: string,
+    isSelected: boolean,
+    mail?: string,
+    name: string,
+    serialVersionUID: number,
+    status: number
+}
+
+// 教师获取任务详情信息
+export interface TeachTaskReturnType {
+    processInfo: ProcessInfoType,
+    // 当前教师的详情信息
+    quotaInfo: {
+        allQuotas: number;
+        createdTime: number;
+        creatorId: string;
+        description: null;
+        details: null;
+        extension: null;
+        jobTitle: string;
+        keywords: string;
+        lastOperatorId: null;
+        lastUpdateTime: null;
+        oddQuotas: number;
+        teaId: string;
+        teamName: string;
+        workId: string;
+    }
+    // 管理员指定学生
+    adminStuInfo: StuInfoType[]
+    stageMap: {
+        // 教师选择的学生
+        passStuInfo: StuInfoType[],
+        // 教师未选择的学生（也没拒绝）
+        notSelectStuInfo: StuInfoType[],
+        // 教师拒绝选择的学生
+        rejectStuInfo: StuInfoType[]
+    }
 }

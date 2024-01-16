@@ -1,5 +1,5 @@
 import { Table, TableColumnsType, Tag } from "antd"
-import { SearchMSRsultForm } from "../Components/Form/MS"
+import { SearchStuMSRsultForm } from "../Components/Form/MS"
 import { useEffect, useMemo } from "react"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
@@ -37,7 +37,7 @@ export default function MSRsult({ workId }: MSRsultPropType) {
 
     return (
         <>
-            <SearchMSRsultForm />
+            <SearchStuMSRsultForm />
             <Table
                 loading={MSInfoLoading} className="mt-2" columns={MSResultColumns}
                 dataSource={MSInfo?.twsInfo}

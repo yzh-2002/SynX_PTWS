@@ -10,7 +10,7 @@ interface RoleHomeType {
 
 export const RoleAlias = {
     'admin': '管理员',
-    'tutor': '教师',
+    'teacher': '教师',
     'student': '考生'
 }
 
@@ -18,7 +18,7 @@ export const RoleAlias = {
 // 不同身份登陆后跳转首页路由
 export const RoleHome: RoleHomeType = {
     'admin': '/admin-home',
-    'tutor': '/tutor-home',
+    'teacher': '/tutor-home',
     'student': '/stu-home'
 }
 
