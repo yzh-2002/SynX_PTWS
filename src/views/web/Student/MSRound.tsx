@@ -3,9 +3,6 @@ import { useApi } from "@/api/request"
 import { getRoundList } from "@/api/admin/round"
 import PageLoading from "@/views/App/PageLoading"
 import { Button, Empty, Table, Tag } from "antd"
-import { useRecoilState } from "recoil"
-import { serviceInfoState } from "@/store/service"
-import { getWorkInfo } from "@/api/admin/service"
 import { useEffect, useMemo } from "react"
 import { RoundReturnType } from "@/objects/round"
 import CollapseCard, { CollapseCardPropType } from "../Components/CollapseCard"
@@ -65,26 +62,15 @@ function CardContent({ round }: { round: RoundReturnType }) {
     )
 }
 
+interface MSRoundPropType {
+    workId: string
+}
 
-export default function MSRound() {
-    // 获取workId（每年只有一个）
-    const [serviceInfo, setServiceInfo] = useRecoilState(serviceInfoState)
-    const { loading: workInfoLoading, run: GetWork, refresh } = useRequest(useApi(getWorkInfo), {
-        manual: true,
-        // 默认应用只有一个服务
-        onSuccess: (data) => {
-            setServiceInfo(data?.workInfo?.length && data.workInfo[0] ||
-                { id: "", name: "", status: NaN, year: NaN })
-        }
-    })
+export default function MSRound({ workId }: MSRoundPropType) {
+    const { loading: RoundListLoading, data: RoundList, runAsync: GetRound } = useRequest(useApi(getRoundList), { manual: true })
     useEffect(() => {
-        !serviceInfo?.id && GetWork({ page: 1, size: 10 })
-    }, [])
-    const { loading: RoundListLoading, data: RoundList, runAsync: GetRound } = useRequest(useApi(getRoundList))
-    useEffect(() => {
-        // 请求报错可能是work被删除，此时需要重新获取workId（感觉这个场景发生概率极小...）
-        !!serviceInfo.id && GetRound({ workId: serviceInfo.id }).catch(() => { refresh() })
-    }, [serviceInfo.id])
+        !!workId && GetRound({ workId })
+    }, [workId])
 
     const GenerateCardConfig = (round: RoundReturnType, idx: number): CollapseCardPropType => {
         const duration = JSON.parse(round?.duration)
@@ -102,7 +88,7 @@ export default function MSRound() {
         }
     }
     return (
-        (RoundListLoading || workInfoLoading) ? <PageLoading /> :
+        RoundListLoading ? <PageLoading /> :
             !RoundList?.length ? <Empty description={'导师匹配服务尚未发布，具体时间请咨询学院研究生科！'} />
                 :
                 // TODO:此时接口返回数据为全部轮次，实际应该返回学生双选结束及之前的轮次（之后的轮次不应返回）

@@ -1,5 +1,6 @@
-import { Form, Row, Col, Input, Select } from "antd";
+import { Form, Row, Col, Input, Select, Button } from "antd";
 import { MS_STATUS } from "@/constants/ms";
+import { SearchOutlined } from "@ant-design/icons"
 
 export function SearchMSRsultForm() {
     const [form] = Form.useForm()
@@ -33,6 +34,13 @@ export function SearchMSRsultForm() {
                                 label: status, value: idx - 1
                             }))}
                         />
+                    </Form.Item>
+                </Col>
+                <Col span={2}>
+                    <Form.Item>
+                        <Button type="primary" shape="circle" icon={<SearchOutlined />} onClick={() => {
+
+                        }} />
                     </Form.Item>
                 </Col>
             </Row>

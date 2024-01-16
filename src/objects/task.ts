@@ -1,4 +1,4 @@
-interface SelectedTutorType {
+export interface SelectedTutorType {
     account: string;
     allQuotas: number;
     code: string;
@@ -41,7 +41,7 @@ export interface StuTaskReturnType {
         status: string;
         workId: string;
     },
-    //TODO：该字段实际未使用
+    //学生可选择导师列表，与其他信息耦合，此处不适用，单独从另一接口返回
     tutorInfo: any,
     // TODO：该字段实际未使用
     selectedResInfo: any,
@@ -53,6 +53,30 @@ export interface StuTaskReturnType {
         tutorId2: SelectedTutorType,
         tutorId3: SelectedTutorType
     },
-    // TODO:意义不明
-    status: boolean
+    // 是否已提交志愿，0->未提交，1->已提交
+    status: number
+}
+
+export interface StuChooseTeachType {
+    account: string;
+    allQuotas: number;
+    code: string;
+    createdTime: number;
+    creatorId: string;
+    description?: string;
+    details?: string;
+    extension?: string;
+    gender: number;
+    id: string;
+    identity: string;
+    jobTitle: string;
+    keywords: string;
+    lastOperatorId?: string;
+    lastUpdateTime?: string;
+    mail?: string;
+    name: string;
+    oddQuotas: number;
+    status: number;
+    teamName: string;
+    workId: string;
 }

@@ -1,21 +1,27 @@
 import CollapseCard, { CollapseCardPropType } from "../Components/CollapseCard"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
-import { getStuTaskInfo, uploadCV } from "@/api/student/task"
+import { getStuTaskInfo, uploadCV, applyTutor, submitTask } from "@/api/student/task"
 import { useMemo, useState } from "react"
 import PageLoading from "@/views/App/PageLoading"
-import { Button, Modal, Tag } from "antd"
+import { Button, Modal, Tag, Tooltip, Popconfirm, App } from "antd"
 import UploadCard from "../Components/UploadCard"
 import { FilePdfOutlined } from "@ant-design/icons"
-
+import { ChooseTeachContent } from "./TaskContent"
+import { SelectedTutorType } from "@/objects/task"
 
 export default function TaskDetail() {
     const params = new URLSearchParams(window.location.search)
     const { loading: TaskLoading, data: taskInfo, refresh } = useRequest(useApi(getStuTaskInfo), {
-        defaultParams: [{ id: params?.get('pid') || '', page: 1, size: 10 }]
+        defaultParams: [{ id: params?.get('pid') || '', page: 1, size: 5 }]
     })
     const { loading: UploadLoading, runAsync: upload } = useRequest(useApi(uploadCV), { manual: true })
+    const { loading: ApplyLoading, runAsync: apply } = useRequest(useApi(applyTutor), { manual: true })
+    const { loading: SubmitLoading, runAsync: submit } = useRequest(useApi(submitTask), { manual: true })
+
     const [uploadModalOpen, setUploadModalOpen] = useState(false)
+    // 当前学生选择的志愿老师，注意其在数组中的顺序即为志愿顺序
+    const [tutorList, setTutorList] = useState<SelectedTutorType[]>([])
 
     const UploadCVConfig = useMemo<CollapseCardPropType>(() => {
         const duration = !!taskInfo?.processInfo?.duration ?
@@ -39,11 +45,13 @@ export default function TaskDetail() {
                 ) : <Tag color='#f50'>未上传</Tag>,
                 appendix: `起止日期：${duration?.start_1}--${duration?.end_1}`,
                 action: (
-                    <Button type="primary" onClick={() => { setUploadModalOpen(true) }}>上传简历</Button>
+                    <Button type="primary" disabled={!!taskInfo?.status}
+                        onClick={() => { setUploadModalOpen(true) }}
+                    >上传简历</Button>
                 )
             }
         }
-    }, [taskInfo?.fileUrl, taskInfo?.processInfo?.duration])
+    }, [taskInfo?.fileUrl, taskInfo?.processInfo?.duration, taskInfo?.status])
     const ChooseTeachConfig = useMemo<CollapseCardPropType>(() => {
         const duration = !!taskInfo?.processInfo?.duration ?
             JSON.parse(taskInfo?.processInfo?.duration) : null
@@ -51,7 +59,13 @@ export default function TaskDetail() {
             content: {
                 label: '申请导师',
                 key: 'choose-teach',
-                children: <></>
+                children: <ChooseTeachContent
+                    id={taskInfo?.processInfo?.id!}
+                    selectedTutorList={taskInfo?.currentSelectedTutor!}
+                    taskStatus={taskInfo?.status!}
+                    tutorList={tutorList}
+                    setTutorList={setTutorList}
+                />
             },
             header: {
                 title: '申请导师',
@@ -65,15 +79,40 @@ export default function TaskDetail() {
                 )
             }
         }
-    }, [taskInfo?.processInfo?.duration])
+    }, [taskInfo?.processInfo?.id, taskInfo?.processInfo?.duration,
+    taskInfo?.currentSelectedTutor, taskInfo?.status, tutorList])
     return (
         TaskLoading ? <PageLoading /> :
             <>
                 <CollapseCard {...UploadCVConfig} />
                 <CollapseCard {...ChooseTeachConfig} />
                 <div className="flex justify-center mt-2">
-                    <Button type="primary" style={{ width: '120px' }}>保存导师意向</Button>
-                    <Button type="primary" className="ml-2" style={{ width: '120px' }}>提交申请</Button>
+                    <Tooltip title={'将导师志愿选择保存至云端，等待提交确认'}>
+                        <Button type="primary" style={{ width: '120px' }}
+                            disabled={!!taskInfo?.status || !tutorList?.length}
+                            loading={ApplyLoading}
+                            onClick={() => {
+                                apply({
+                                    id: taskInfo?.processInfo?.id!,
+                                    tutorId1: tutorList[0]?.id,
+                                    tutorId2: tutorList[1]?.id,
+                                    tutorId3: tutorList[2]?.id
+                                }, { message: true, success: '保存导师意向成功' }).then(() => { refresh() })
+                            }}
+                        >保存导师意向</Button>
+                    </Tooltip>
+                    <Popconfirm title={'确认提交任务？一旦提交，将无法修改申请信息，请确定提交！'}
+                        okText={'确定'} cancelText={'取消'}
+                        onConfirm={() => {
+                            submit({ id: taskInfo?.processInfo?.id! },
+                                { message: true, success: '提交任务成功' }).then(() => { refresh() })
+                        }}
+                    >
+                        <Button type="primary" className="ml-2" style={{ width: '120px' }}
+                            loading={SubmitLoading}
+                            disabled={!!taskInfo?.status}
+                        >提交申请</Button>
+                    </Popconfirm>
                 </div>
                 <Modal title={
                     <div className="flex items-center">
