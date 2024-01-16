@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Picker, Input, Empty, Collapse, Flex, Pagination } from "react-vant"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
-import { getTeacherList } from "@/api/admin/teacher"
+import { getTeacherList } from "@/api/admin/teachInfo"
 import PageLoading from "@/views/App/PageLoading"
 import { TeacherReturnType } from "@/objects/teacher"
 

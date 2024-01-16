@@ -1,4 +1,4 @@
-import { Table } from "antd"
+import { Table, Tag } from "antd"
 import { SearchTeachMatchForm } from "../Components/Form/TeachMatch"
 import { ColumnsType } from "antd/es/table"
 import { useEffect, useMemo, useState } from "react"
@@ -6,6 +6,7 @@ import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
 import { getMSInfo } from "@/api/admin/ms"
 import { SearchMSParams } from "@/objects/ms"
+import { MS_STATUS, MS_STATUS_COLOR } from "@/constants/ms"
 
 export type MSParams = Omit<SearchMSParams, 'workId'>
 
@@ -24,15 +25,38 @@ export default function TeachMatchInfo({ id }: { id: string }) {
             { title: '导师团队', dataIndex: 'teamName' },
             { title: '申报轮次', dataIndex: 'twsRound' },
             { title: '申报志愿', dataIndex: 'choiceRank' },
-            { title: '匹配状态', dataIndex: 'status' },
+            {
+                title: '匹配状态', dataIndex: 'status', render: (_, record) => {
+                    return <Tag color={MS_STATUS_COLOR[record?.status! + 1]}>{MS_STATUS[record?.status! + 1]}</Tag>
+                }
+            },
             { title: '审核时间', dataIndex: 'createdTime' },
         ]
     }, [])
 
     return (
         <>
-            <SearchTeachMatchForm id={id} params={params} setParams={(v) => setParams({ ...params, ...v })} />
-            <Table className="mt-2" columns={TeachMatchColumns} loading={MSLoading} dataSource={MSInfo?.twsInfo} />
+            <SearchTeachMatchForm
+                id={id} params={params}
+                setParams={(v) => setParams({ ...params, ...v })}
+                refreshTable={() => setParams({ page: 1, size: 5 })}
+            />
+            <Table
+                className="mt-2"
+                columns={TeachMatchColumns}
+                loading={MSLoading}
+                dataSource={MSInfo?.twsInfo}
+                pagination={{
+                    showSizeChanger: true,
+                    total: MSInfo?.total,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
+                }}
+            />
         </>
     )
 }

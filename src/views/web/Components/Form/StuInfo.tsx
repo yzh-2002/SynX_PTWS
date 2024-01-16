@@ -1,5 +1,5 @@
 import { Form, Row, Col, Button, Input, Modal } from "antd"
-import { SearchOutlined } from "@ant-design/icons"
+import { SearchOutlined, RedoOutlined } from "@ant-design/icons"
 import { DOWNLOAD_STU_URL } from "@/constants/app"
 import UploadCard from "../UploadCard"
 import { useRequest } from "ahooks"
@@ -13,10 +13,11 @@ interface SearchStuFormPropType {
     refresh: () => void,
     // 打开新增学生modal
     addStu: () => void,
-    setParams: (v: SearchStudentParams) => void
+    setParams: (v: SearchStudentParams) => void,
+    refreshTable: () => void
 }
 
-export function SearchStuInfoForm({ id, refresh, addStu, setParams }: SearchStuFormPropType) {
+export function SearchStuInfoForm({ id, refresh, addStu, setParams, refreshTable }: SearchStuFormPropType) {
     const [uploadModalOpen, setUploadModalOpen] = useState(false)
     const { loading: UploadLoading, runAsync: upload } = useRequest(useApi(addStuBatch), { manual: true })
     const [form] = Form.useForm()
@@ -25,23 +26,35 @@ export function SearchStuInfoForm({ id, refresh, addStu, setParams }: SearchStuF
             <Form form={form}>
                 <Row gutter={[8, 0]}>
                     <Col span={7}>
-                        <Form.Item label='姓名'>
+                        <Form.Item label='姓名' name={'name'}>
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col span={7}>
-                        <Form.Item label='考号'>
+                        <Form.Item label='考号' name={'code'}>
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col span={7}>
-                        <Form.Item label='手机号'>
+                        <Form.Item label='手机号' name={'phone'}>
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col span={3}>
                         <Form.Item>
-                            <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+                            <div className="flex">
+                                <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                    onClick={() => {
+                                        setParams({ ...form.getFieldsValue() })
+                                    }}
+                                />
+                                <Button className="ml-2" type="primary" shape="circle" icon={<RedoOutlined />}
+                                    onClick={() => {
+                                        form.resetFields()
+                                        refreshTable()
+                                    }}
+                                ></Button>
+                            </div>
                         </Form.Item>
                     </Col>
                 </Row>

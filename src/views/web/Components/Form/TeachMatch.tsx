@@ -1,5 +1,5 @@
 import { Form, Row, Col, Input, Button, Select } from "antd"
-import { SearchOutlined } from "@ant-design/icons"
+import { SearchOutlined, RedoOutlined } from "@ant-design/icons"
 import { exportTeachMSInfo, exportMSInfo } from "@/api/admin/ms"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
@@ -9,10 +9,11 @@ import { MSParams } from "../../Admin/TeachMatchInfo"
 interface SearchTeachMatchFormPropType {
     id: string,
     params: MSParams
-    setParams: (v: MSParams) => void
+    setParams: (v: MSParams) => void,
+    refreshTable: () => void
 }
 
-export function SearchTeachMatchForm({ id, params, setParams }: SearchTeachMatchFormPropType) {
+export function SearchTeachMatchForm({ id, params, setParams, refreshTable }: SearchTeachMatchFormPropType) {
     const { loading: ExportTeachLoading, run: exportTeach } = useRequest(useApi(exportTeachMSInfo), { manual: true })
     const { loading: ExportMSLoading, run: exportMS } = useRequest(useApi(exportMSInfo), { manual: true })
     const [form] = Form.useForm()
@@ -49,11 +50,21 @@ export function SearchTeachMatchForm({ id, params, setParams }: SearchTeachMatch
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={8}>
+                    <Col span={3}>
                         <Form.Item>
-                            <Button type="primary" shape="circle" icon={<SearchOutlined />} onClick={() => {
-                                setParams(form.getFieldsValue())
-                            }} />
+                            <div className="flex">
+                                <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                    onClick={() => {
+                                        setParams({ ...form.getFieldsValue() })
+                                    }}
+                                />
+                                <Button className="ml-2" type="primary" shape="circle" icon={<RedoOutlined />}
+                                    onClick={() => {
+                                        form.resetFields()
+                                        refreshTable()
+                                    }}
+                                ></Button>
+                            </div>
                         </Form.Item>
                     </Col>
                 </Row>

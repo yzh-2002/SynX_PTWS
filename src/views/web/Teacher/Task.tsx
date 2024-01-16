@@ -148,7 +148,7 @@ export default function TeachTask() {
             },
             header: { title: '任务结果', }
         }
-    }, [])
+    }, [TaskInfo?.adminStuInfo, TaskInfo?.stageMap])
     return (
         TaskInfoLoading ? <PageLoading /> :
             <>

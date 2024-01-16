@@ -26,11 +26,11 @@ export default function TeachStuInfo() {
         return [
             {
                 label: '导师详情', key: 'teacher-detail', children:
-                    workInfoLoading ? <PageLoading /> : <TeachInfo id={serviceInfo.id} />
+                    workInfoLoading ? <PageLoading /> : <TeachInfo id={serviceInfo?.id} />
             },
             {
                 label: '学生详情', key: 'student-detail', children:
-                    workInfoLoading ? <PageLoading /> : <StuInfo id={serviceInfo.id} />
+                    workInfoLoading ? <PageLoading /> : <StuInfo id={serviceInfo?.id} />
             },
         ]
     }, [workInfoLoading])

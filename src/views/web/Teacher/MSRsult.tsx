@@ -1,16 +1,18 @@
 import { Table, Tag } from "antd"
 import { SearchTeachMSRsultForm } from "../Components/Form/MS"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ColumnsType } from "antd/es/table"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
 import { getMSInfo } from "@/api/admin/ms"
 import { MSType } from "@/objects/ms"
 import { MS_STATUS, MS_STATUS_COLOR } from "@/constants/ms"
+import { MSParams } from "../Admin/TeachMatchInfo"
 
 export default function MSRsult({ workId }: { workId: string }) {
     const { loading: MSInfoLoading, data: MSInfo, run: getMS } = useRequest(useApi(getMSInfo), { manual: true })
-    useEffect(() => { getMS({ workId, page: 1, size: 5 }) }, [workId])
+    const [params, setParams] = useState<MSParams>({ page: 1, size: 5 })
+    useEffect(() => { getMS({ workId, ...params }) }, [workId, params])
 
     const TeachMSColumns = useMemo<ColumnsType<MSType>>(() => {
         return [
@@ -29,11 +31,24 @@ export default function MSRsult({ workId }: { workId: string }) {
 
     return (
         <>
-            <SearchTeachMSRsultForm />
+            <SearchTeachMSRsultForm
+                setParams={(v) => setParams({ ...params, ...v })}
+                refreshTable={() => setParams({ page: 1, size: 5 })}
+            />
             <Table
                 className="mt-2" columns={TeachMSColumns}
                 loading={MSInfoLoading}
                 dataSource={MSInfo?.twsInfo}
+                pagination={{
+                    showSizeChanger: true,
+                    total: MSInfo?.total,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
+                }}
             />
         </>
     )

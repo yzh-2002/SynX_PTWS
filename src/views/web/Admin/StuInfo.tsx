@@ -54,9 +54,25 @@ export default function StuInfo({ id }: { id: string }) {
                     setIsEdit(false)
                     setStuModalOpen(true)
                 }}
-                setParams={setParams}
+                setParams={(v) => setParams({ ...params, ...v })}
+                refreshTable={() => setParams({ page: 1, size: 5 })}
             />
-            <Table className="mt-2" columns={StuInfoColumns} loading={StuLoading} dataSource={StuList?.userInfo} />
+            <Table
+                className="mt-2"
+                columns={StuInfoColumns}
+                loading={StuLoading}
+                dataSource={StuList?.userInfo}
+                pagination={{
+                    showSizeChanger: true,
+                    total: StuList?.total,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
+                }}
+            />
             <Modal title={isEdit ? '修改信息' : '新增导师'}
                 open={stuModalOpen}
                 onCancel={() => setStuModalOpen(false)}

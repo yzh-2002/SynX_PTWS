@@ -17,7 +17,7 @@ export const uploadCV = ({ id, file }: { id: string, file: File }) => {
 // 获取学生任务中可选择的教师列表
 export const getChooseTeachList = api<
     { id: string, page: number, size: number },
-    { total: number, userMaps: StuChooseTeachType[] }>
+    { tutorTotal: number, userMaps: StuChooseTeachType[] }>
     ({
         url: '/process/instance-tutor',
         method: 'GET'

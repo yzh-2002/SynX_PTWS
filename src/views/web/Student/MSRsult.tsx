@@ -1,11 +1,12 @@
 import { Table, TableColumnsType, Tag } from "antd"
 import { SearchStuMSRsultForm } from "../Components/Form/MS"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
 import { getMSInfo } from "@/api/admin/ms"
 import { MSType } from "@/objects/ms"
 import { MS_STATUS, MS_STATUS_COLOR } from "@/constants/ms"
+import { MSParams } from "../Admin/TeachMatchInfo"
 
 interface MSRsultPropType {
     workId: string
@@ -13,10 +14,10 @@ interface MSRsultPropType {
 
 export default function MSRsult({ workId }: MSRsultPropType) {
     const { loading: MSInfoLoading, run: getMS, data: MSInfo } = useRequest(useApi(getMSInfo), { manual: true })
-
+    const [params, setParams] = useState<MSParams>({ page: 1, size: 5 })
     useEffect(() => {
-        !!workId && getMS({ workId, page: 1, size: 5 })
-    }, [workId])
+        !!workId && getMS({ workId, ...params })
+    }, [workId, params])
     const MSResultColumns = useMemo<TableColumnsType<MSType>>(() => {
         return [
             { title: '导师姓名', dataIndex: 'teaName' },
@@ -37,10 +38,23 @@ export default function MSRsult({ workId }: MSRsultPropType) {
 
     return (
         <>
-            <SearchStuMSRsultForm />
+            <SearchStuMSRsultForm
+                setParams={(v) => setParams({ ...params, ...v })}
+                refreshTable={() => setParams({ page: 1, size: 5 })}
+            />
             <Table
                 loading={MSInfoLoading} className="mt-2" columns={MSResultColumns}
                 dataSource={MSInfo?.twsInfo}
+                pagination={{
+                    showSizeChanger: true,
+                    total: MSInfo?.total,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
+                }}
             />
         </>
     )

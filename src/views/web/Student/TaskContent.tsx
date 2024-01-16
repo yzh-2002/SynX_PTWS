@@ -25,12 +25,13 @@ const MAX_SELECT_TUTOR = 3
 export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorList, setTutorList
 }: ChooseTeachContentPropType) {
     const { loading: TeachListLoading, data: TeachList, run: getTeach } = useRequest(useApi(getChooseTeachList), { manual: true })
-    useEffect(() => { getTeach({ id, page: 1, size: 5 }) }, [])
+    const [params, setParams] = useState({ page: 1, size: 5 })
+    useEffect(() => { getTeach({ id, ...params }) }, [params])
     useEffect(() => {
         // 初始化志愿老师信息
         // FIXME:React会把多次setState合并一次处理....
         if (!!selectedTutorList) {
-            let tempList =[]
+            let tempList = []
             for (let i = 1; i <= MAX_SELECT_TUTOR; i++) {
                 const tutor = selectedTutorList[`tutorId${i}` as (keyof typeof selectedTutorList)]
                 if (!!tutor) {
@@ -139,6 +140,16 @@ export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorLis
                 loading={TeachListLoading}
                 columns={chooseTeachColumns}
                 dataSource={TeachList?.userMaps}
+                pagination={{
+                    showSizeChanger: true,
+                    total: TeachList?.tutorTotal,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
+                }}
             />
             <Table
                 title={() => (<span className="text-lg font-bold">申请志愿</span>)}

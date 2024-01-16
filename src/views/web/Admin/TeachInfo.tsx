@@ -4,15 +4,21 @@ import { Button, Modal, Popconfirm, Table, TableColumnsType } from "antd"
 import { useEffect, useMemo, useState } from "react"
 
 import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher"
-import { getTeacherList, delTeacher } from "@/api/admin/teacher"
+import { getTeacherList, delTeacher, getNotSelectStuList, specifyStu } from "@/api/admin/teachInfo"
 import { SearchTeacherForm, TeacherForm } from "../Components/Form/TeachInfo"
 import { SearchSpecifyStuForm } from "../Components/Form/StuInfo"
+import { StudentReturnType } from "@/objects/student"
 
 
 
-export default function TeachInfo({ id }: { id: string }) {
+export default function TeachInfoList({ id }: { id: string }) {
     const { loading: TeachLoading, data: TeachList, run: getTeach, refresh } = useRequest(useApi(getTeacherList), { manual: true })
     const { loading: DelLoading, runAsync: delTeach } = useRequest(useApi(delTeacher), { manual: true })
+    // 获取未双选学生信息列表 & 管理员为教师指定学生
+    const { loading: NotSelectedLoading, data: NotSelectedStu, refresh: refreshNotSelected } = useRequest(useApi(getNotSelectStuList), {
+        defaultParams: [{ workId: id }]
+    })
+    const { loading: SpecifyLoading, runAsync: Specify } = useRequest(useApi(specifyStu), { manual: true })
     const [params, SetParams] = useState<SearchTeacherParams>({})
     useEffect(() => { getTeach({ id, ...params }) }, [params])
     const [teachModalOpen, setTeachModalOpen] = useState(false)
@@ -64,14 +70,32 @@ export default function TeachInfo({ id }: { id: string }) {
             },
         ]
     }, [])
-    const SpecifyStuColumns = useMemo<TableColumnsType<any>>(() => {
+    const SpecifyStuColumns = useMemo<TableColumnsType<StudentReturnType>>(() => {
         return [
             { title: '姓名', dataIndex: 'name', key: 'name' },
             { title: '考号', dataIndex: 'code', key: 'code' },
             { title: '手机号', dataIndex: 'account', key: 'phone' },
-            { title: '操作', key: 'action' }
+            {
+                title: '操作', key: 'action', render: (_, stu) => {
+                    return (
+                        <Popconfirm title={`确定要指定${stu?.name}？一旦选择，将无法撤销，请确定选择！`}
+                            okText={'确定'} cancelText={'取消'} onConfirm={() => {
+                                Specify({ teaId: teachInfo?.id!, stuId: stu?.id, workId: id }, {
+                                    message: true, success: '指定成功'
+                                }).then(() => {
+                                    setSpecifyStuModalOpen(false)
+                                    refreshNotSelected()
+                                    refresh()
+                                })
+                            }}
+                        >
+                            <Button type="link" loading={SpecifyLoading}>选择</Button>
+                        </Popconfirm>
+                    )
+                }
+            }
         ]
-    }, [])
+    }, [teachInfo])
     return (
         <div>
             <SearchTeacherForm
@@ -89,6 +113,7 @@ export default function TeachInfo({ id }: { id: string }) {
                 columns={TeachColumns}
                 dataSource={TeachList?.userInfo || []}
                 pagination={{
+                    hideOnSinglePage: true,
                     total: TeachList?.total,
                     pageSize: 5
                 }}
@@ -112,7 +137,11 @@ export default function TeachInfo({ id }: { id: string }) {
                 destroyOnClose footer={null}
             >
                 <SearchSpecifyStuForm />
-                <Table columns={SpecifyStuColumns} />
+                <Table
+                    loading={NotSelectedLoading}
+                    columns={SpecifyStuColumns}
+                    dataSource={NotSelectedStu}
+                />
             </Modal>
         </div>
     )

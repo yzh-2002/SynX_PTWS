@@ -5,7 +5,7 @@ import UploadCard from "../UploadCard";
 import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
 import { useApi } from "@/api/request";
-import { addTeacherBatch, addTeacher, updateTeacher } from "@/api/admin/teacher";
+import { addTeacherBatch, addTeacher, updateTeacher } from "@/api/admin/teachInfo";
 import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher";
 
 const jobTitleOption = [
