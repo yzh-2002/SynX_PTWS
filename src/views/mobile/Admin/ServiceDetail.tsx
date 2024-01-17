@@ -21,7 +21,7 @@ export default function ServiceDetail() {
         }
     })
     useEffect(() => {
-        !serviceInfo?.id && run({ page: 1, size: 10 })
+        !serviceInfo?.id && run({ page: 1, size: 5 })
     }, [])
     const TabContents = useMemo(() => {
         return [

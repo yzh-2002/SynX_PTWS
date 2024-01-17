@@ -100,7 +100,7 @@ export default function Service() {
     const navigator = useNavigate()
     const [, setServiceInfo] = useRecoilState(serviceInfoState)
     const { loading: WorkInfoLoading, data: WorkList, refresh } = useRequest(useApi(getWorkInfo), {
-        defaultParams: [{ page: 1, size: 10 }],
+        defaultParams: [{ page: 1, size: 5 }],
         // 默认应用只有一个服务
         onSuccess: (data) => {
             setServiceInfo(data?.workInfo?.length && data.workInfo[0] ||

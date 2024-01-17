@@ -18,6 +18,8 @@ const ServiceDetail = lazy(() => import("@/views/mobile/Admin/ServiceDetail"))
 const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
 const CreateTeach = lazy(() => import("@/views/mobile/Form/TeachInfo"))
 
+const CreateStu = lazy(() => import("@/views/mobile/Form/StuInfo"))
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -74,7 +76,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'create-stu',
-                element: <></>
+                element: <CreateStu />
             }
         ]
     },

@@ -22,7 +22,7 @@ export default function UploadCard({ loading, accept, upload }: UploadCardPropTy
                 })
             }}
         >
-            <div className="flex flex-col items-center m-2 p-2"
+            <div className="flex flex-col justify-center items-center m-2 p-2"
                 style={{
                     boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, \
                         rgba(60, 64, 67, 0.15) 0px 1px 3px 1px', height: '60px', width: '200px'
