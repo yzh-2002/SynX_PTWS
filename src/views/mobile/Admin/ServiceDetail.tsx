@@ -7,6 +7,7 @@ import { useApi } from "@/api/request"
 import { getWorkInfo } from "@/api/admin/service"
 
 import TeachStuInfo from "./TeachStuInfo"
+import RoundInfo from "./Round"
 import PageLoading from "@/views/App/PageLoading"
 
 export default function ServiceDetail() {
@@ -24,7 +25,11 @@ export default function ServiceDetail() {
     }, [])
     const TabContents = useMemo(() => {
         return [
-            { key: 'round', title: '轮次配置', children: <></> },
+            {
+                key: 'round', title: '轮次配置', children: (
+                    workInfoLoading ? <PageLoading /> : <RoundInfo id={serviceInfo.id} />
+                )
+            },
             {
                 key: 'teach-stu', title: '师生导入', children: (
                     workInfoLoading ? <PageLoading /> : <TeachStuInfo id={serviceInfo.id} />

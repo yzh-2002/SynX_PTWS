@@ -110,9 +110,11 @@ export default function Service() {
     return (
         <div className="flex flex-col mt-2">
             <div className="flex flex-col mx-4 justify-center">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                     <span className="font-bold">全部</span>
-                    <span className="text-lg" onClick={() => navigator('/app/create-service')}>+</span>
+                    <span className="text-lg" onClick={() => navigator('/app/create-service')}>
+                        <Button type="primary" size="small">创建导师匹配服务</Button>
+                    </span>
                 </div>
                 <Input className="bg-[#f5f5f7] mt-4 h-8 pl-2"
                     prefix={<Search color="#909398" />} placeholder="按展示名称搜索" />

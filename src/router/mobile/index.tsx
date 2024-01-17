@@ -16,6 +16,7 @@ MobileLayout = withBreakpoint(MobileLayout)
 const ServiceList = lazy(() => import("@/views/mobile/Admin/Service"))
 const ServiceDetail = lazy(() => import("@/views/mobile/Admin/ServiceDetail"))
 const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
+const CreateTeach = lazy(() => import("@/views/mobile/Form/TeachInfo"))
 
 const router = createBrowserRouter([
     {
@@ -46,22 +47,34 @@ const router = createBrowserRouter([
         path: '/app',
         element: <MobileLayout openAccess />,
         children: [
-            // 管理端
+            // 管理端首页
             {
                 path: 'admin-home',
                 element: <App access="admin" />,
             },
             {
-                path: 'service',
+                path: 'service', //导师匹配服务页面
                 element: <ServiceList />
             },
             {
-                path: 'service-detail',
+                path: 'service-detail', //详情页（管理员主体页面）
                 element: <ServiceDetail />
             },
             {
                 path: "create-service",
                 element: <CreateService />
+            },
+            {
+                path: 'create-round',
+                element: <></>
+            },
+            {
+                path: 'create-teach',
+                element: <CreateTeach />
+            },
+            {
+                path: 'create-stu',
+                element: <></>
             }
         ]
     },

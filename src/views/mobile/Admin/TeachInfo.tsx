@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useState } from "react"
-import { Picker, Input, Empty, Collapse, Flex, Pagination } from "react-vant"
+import { useCallback, useState } from "react"
+import { Picker, Input, Empty, Collapse, Flex, Pagination, Button, Dialog, Toast, Popup } from "react-vant"
+import { Search, Replay } from "@react-vant/icons"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
-import { getTeacherList } from "@/api/admin/teachInfo"
+import { getTeacherList, delTeacher, addTeacherBatch } from "@/api/admin/teachInfo"
 import PageLoading from "@/views/App/PageLoading"
 import { TeacherReturnType } from "@/objects/teacher"
+import { DOWNLOAD_TEACH_URL } from "@/constants/app"
+import { useNavigate } from "react-router-dom"
+import UploadCard from "../UploadCard"
 
 const TeachSearchFields = [
     { text: '姓名', value: 'name' },
@@ -14,7 +18,14 @@ const TeachSearchFields = [
     { text: '职称', value: 'jobTitle' },
 ]
 
-function TeachCollapseCard({ teach }: { teach: TeacherReturnType }) {
+interface TeachCollapsePropType {
+    teach: TeacherReturnType,
+    id: string //workId
+    refresh: () => void
+}
+
+function TeachCollapseCard({ teach, id, refresh }: TeachCollapsePropType) {
+    const navigator = useNavigate()
     const Description = useCallback(({ label, value }: { label: string, value: string | number | undefined }) => {
         return (
             <div>
@@ -23,7 +34,7 @@ function TeachCollapseCard({ teach }: { teach: TeacherReturnType }) {
             </div>
         )
     }, [])
-
+    const { runAsync: del } = useRequest(useApi(delTeacher), { manual: true })
     return (
         <Collapse>
             <Collapse.Item title={teach?.name}>
@@ -56,6 +67,30 @@ function TeachCollapseCard({ teach }: { teach: TeacherReturnType }) {
                         <Description label="剩余名额" value={teach?.oddQuotas} />
                     </Flex.Item>
                 </Flex>
+                <div className="flex justify-end">
+                    <Button type="primary" size="small" onClick={() => {
+
+                    }}>指定学生</Button>
+                    <Button type="primary" size="small" style={{ margin: '0 8px' }} onClick={() => {
+                        navigator(`/app/create-teach?tid=${teach?.id}&wid=${id}`)
+                    }}>修改</Button>
+                    <Button type="danger" size="small" onClick={() => {
+                        Dialog.show({
+                            title: '二次确认',
+                            message: '确认删除该导师？',
+                            showCancelButton: true,
+                            onConfirm: () => {
+                                return new Promise(r => {
+                                    del({ id, ids: [teach?.id] }, { message: true }).then(() => {
+                                        r(true)
+                                        Toast.success(`删除${teach?.name}教师成功`)
+                                        refresh()
+                                    })
+                                })
+                            }
+                        })
+                    }}>删除</Button>
+                </div>
             </Collapse.Item>
         </Collapse>
     )
@@ -65,43 +100,77 @@ export default function TeachInfo({ id }: { id: string }) {
     const [searchField, setSearchField] = useState('name')
     const [searchValue, setSearchValue] = useState('')
     const [page, setPage] = useState(1)
+    const navigator = useNavigate()
     // TODO:获取教师目前未分页
-    const { loading: TeachListLoading, data: TeachList, run: getTeach } = useRequest(useApi(getTeacherList), {
-        manual: true, debounceWait: 300
+    const { loading: TeachListLoading, data: TeachList, run: getTeach, refresh } = useRequest(useApi(getTeacherList), {
+        defaultParams: [{ id }]
     })
-    useEffect(() => { getTeach({ id, [searchField]: searchValue }) }, [searchField, searchValue])
+    const [uploadVisible, setUploadVisible] = useState(false)
+    const { loading: UploadLoading, runAsync: uploadTeaches } = useRequest(useApi(addTeacherBatch), { manual: true })
     return (
         <>
-            <div className="flex p-2 mt-2 bg-white">
-                <Picker popup={{ round: true }} columns={TeachSearchFields} value={searchField}
-                    onConfirm={(v: string) => {
-                        setSearchField(v)
+            <>
+                <div className="flex items-center p-2 mt-2 bg-white">
+                    <Picker popup={{ round: true }} columns={TeachSearchFields} value={searchField}
+                        onConfirm={(v: string) => {
+                            setSearchField(v)
+                            setSearchValue('')
+                        }}
+                    >
+                        {(val: string | string[], _, actions) => {
+                            return <Input
+                                className="h-8 bg-[#f5f5f7]" style={{ width: '240px' }}
+                                placeholder="请选择搜索字段" onClick={() => actions.open()}
+                                prefix={!!val ? '搜索字段:' : ''}
+                                value={!!val ? TeachSearchFields.find(v => v.value === val)?.text : ''}
+                            />
+                        }}
+                    </Picker>
+                    <Input className="h-8 bg-[#f5f5f7] mr-2" style={{ marginLeft: '4px' }}
+                        value={searchValue} onChange={(v) => { setSearchValue(v) }}
+                    />
+                    <Button size="mini" type="primary" icon={<Search />} round onClick={() => {
+                        getTeach({ id, [searchField]: searchValue })
+                    }} />
+                    <Button size="mini" type="primary" icon={<Replay />} round onClick={() => {
+                        setSearchField('')
                         setSearchValue('')
-                    }}
-                >
-                    {(val: string | string[], _, actions) => {
-                        return <Input
-                            className="h-8 bg-[#f5f5f7]" style={{ width: '160px' }}
-                            placeholder="  请选择搜索字段" onClick={() => actions.open()}
-                            value={!!val ? TeachSearchFields.find(v => v.value === val)?.text : ''}
-                        />
-                    }}
-                </Picker>
-                <Input className="h-8 bg-[#f5f5f7]" style={{ marginLeft: '4px' }}
-                    value={searchValue} onChange={(v) => { setSearchValue(v) }}
-                />
-            </div>
+                        getTeach({ id })
+                    }} />
+                </div>
+                <div className="flex p-2 items-center bg-white">
+                    <Button type="primary" size="small" onClick={() => {
+                        navigator(`/app/create-teach?wid=${id}`)
+                    }}>增加导师</Button>
+                    <Button type="primary" size="small" style={{ margin: "0 8px" }}
+                        onClick={() => { setUploadVisible(true) }}
+                    >批量导入</Button>
+                    <a href={DOWNLOAD_TEACH_URL} download={'批量导入教师模板'}>下载批量导入导师模板</a>
+                </div>
+            </>
             <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${TeachList?.total || 0}条数据`}</div>
             {
                 TeachListLoading ? <PageLoading /> : (
                     !!TeachList?.total ? (
-                        TeachList?.userInfo?.map((teach) => <TeachCollapseCard key={teach?.id} teach={teach} />)
+                        TeachList?.userInfo?.map((teach) =>
+                            <TeachCollapseCard key={teach?.id} teach={teach} id={id} refresh={refresh} />)
                     ) : <Empty description={'暂无数据'} />
                 )
             }
             <Pagination totalItems={TeachList?.total || 0} itemsPerPage={5} value={page} mode='simple'
                 onChange={setPage}
             />
+            <Popup visible={uploadVisible} title={'批量导入'} round
+                onClose={() => setUploadVisible(false)}
+            >
+                <UploadCard loading={UploadLoading} upload={(f) => {
+                    uploadTeaches({ id, file: f }, { message: true }).then(() => {
+                        Toast.success('批量导入成功')
+                        setUploadVisible(false)
+                        refresh()
+                    })
+                }} />
+            </Popup>
         </>
     )
 }

@@ -8,7 +8,7 @@ import { useApi } from "@/api/request";
 import { addTeacherBatch, addTeacher, updateTeacher } from "@/api/admin/teachInfo";
 import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher";
 
-const jobTitleOption = [
+export const jobTitleOption = [
     { label: '教授', value: '教授' },
     { label: '研究员', value: '研究员' },
     { label: '高级工程师(正高)', value: '高级工程师(正高)' },
