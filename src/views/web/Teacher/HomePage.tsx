@@ -38,7 +38,7 @@ export default function TeachHomePage() {
                 )
             },
         ]
-    }, [serviceInfo?.id])
+    }, [workInfoLoading, serviceInfo?.id])
 
     return (
         <Tabs

@@ -40,7 +40,7 @@ function ServiceCard({ service }: { service: ServiceReturnType }) {
 
 export default function Service() {
     const navigator = useNavigate()
-    const { loading: WorkInfoLoading, data: WorkList, refresh } = useRequest(useApi(getWorkInfo), {
+    const { loading: WorkInfoLoading, data: WorkList } = useRequest(useApi(getWorkInfo), {
         defaultParams: [{ page: 1, size: 10 }],
     })
     return (

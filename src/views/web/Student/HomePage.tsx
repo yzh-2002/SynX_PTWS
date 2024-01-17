@@ -39,7 +39,7 @@ export default function StuHomePage() {
                 )
             },
         ]
-    }, [serviceInfo?.id])
+    }, [serviceInfo?.id, workInfoLoading])
 
     return (
         <Tabs

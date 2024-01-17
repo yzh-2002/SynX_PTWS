@@ -7,6 +7,7 @@ import { useApi } from "@/api/request"
 import { getWorkInfo } from "@/api/admin/service"
 
 import TeachStuInfo from "./TeachStuInfo"
+import PageLoading from "@/views/App/PageLoading"
 
 export default function ServiceDetail() {
     const [serviceInfo, setServiceInfo] = useRecoilState(serviceInfoState)
@@ -24,10 +25,14 @@ export default function ServiceDetail() {
     const TabContents = useMemo(() => {
         return [
             { key: 'round', title: '轮次配置', children: <></> },
-            { key: 'teach-stu', title: '师生导入', children: <TeachStuInfo id={serviceInfo.id} /> },
+            {
+                key: 'teach-stu', title: '师生导入', children: (
+                    workInfoLoading ? <PageLoading /> : <TeachStuInfo id={serviceInfo.id} />
+                )
+            },
             { key: 'ms-info', title: '双选详情', children: <></> },
         ]
-    }, [])
+    }, [workInfoLoading])
     return (
         <div className="bg-[#f5f5f7] flex flex-col">
             <span className="font-bold text-lg p-2 mb-2 bg-white">{serviceInfo?.name}</span>

@@ -14,7 +14,7 @@ import { delWork, updateWorkStatus } from "@/api/admin/service"
 import { serviceInfoState } from "@/store/service"
 import { useRecoilState } from "recoil"
 
-function ServiceConfigTable({ workInfo }: { workInfo: ServiceReturnType }) {
+function ServiceConfigTable() {
     const navigator = useNavigate()
     const data = [{ title: '轮次配置', }, { title: '师生导入', }, { title: "双选详情" }]
     const columns: ColumnsType<typeof data[0]> = [
@@ -75,7 +75,7 @@ export default function HomePage() {
                 key: work.name + idx,
                 label: work.name,
                 showArrow: false,
-                children: <ServiceConfigTable workInfo={work} />
+                children: <ServiceConfigTable />
             },
             // work卡片默认展开，且不可关闭
             activeKey: work.name + idx,

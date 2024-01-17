@@ -158,6 +158,7 @@ export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorLis
                     idx: idx + 1
                 }))}
                 columns={resultColumns} bordered className="mt-2"
+                pagination={false}
             />
         </>
     )
