@@ -29,7 +29,6 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
 function withAuthCheck(Component: ComponentType<any>, callback: ReactElement): ComponentType<any> {
     return (props: any) => {
         const userInfo = useRecoilValue(userInfoState)
-        // TODO:props中access字段和user的关系
         let hasAuth = true
         const openAccess = !!props?.openAccess
         if (openAccess) {

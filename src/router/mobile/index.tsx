@@ -6,11 +6,13 @@ import { withBreakpoint } from "@/utils/breakpoints";
 
 const OpenAccessLayout = loadPage(lazy(() => import("@/layouts/OpenAccessLayout")))
 const Login = loadPage(lazy(() => import("../../views/App/Login")))
-const App = loadPage(lazy(() => import("@/views/mobile/HomePage")))
+const App = loadPage(lazy(() => import("@/views/mobile/Admin/HomePage")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))
 
 let MobileLayout = loadPage(lazy(() => import("@/layouts/MobileLayout")))
 MobileLayout = withBreakpoint(MobileLayout)
+
+
 const ServiceList = lazy(() => import("@/views/mobile/Admin/Service"))
 const ServiceDetail = lazy(() => import("@/views/mobile/Admin/ServiceDetail"))
 const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
@@ -42,11 +44,12 @@ const router = createBrowserRouter([
     },
     {
         path: '/app',
-        element: <MobileLayout />,
+        element: <MobileLayout openAccess />,
         children: [
+            // 管理端
             {
-                index: true,
-                element: <App />,
+                path: 'admin-home',
+                element: <App access="admin" />,
             },
             {
                 path: 'service',
