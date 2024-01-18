@@ -5,6 +5,7 @@ import { RecoilRoot } from 'recoil'
 
 import router from '@/router/mobile'
 import "@/styles/taildwind.css"
+import "@/styles/vant-custom.css"
 import PageLoading from '@/views/App/PageLoading'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -1,6 +1,7 @@
 import dayjs, { Dayjs } from "dayjs"
 import { TASK_CONFIG } from "@/constants/round"
 import { FormInstance } from "antd";
+import { FormInstance as MobileFormInstance } from "react-vant";
 import { RuleObject } from "antd/es/form";
 import { RoundCreateType, RoundReturnType } from "@/objects/round";
 
@@ -30,7 +31,7 @@ export function convert_to_backend(v: RoundFormType): RoundCreateType {
     v.duration.forEach((item, RoundIndex) => {
         item.forEach((time, index) => {
             // @ts-ignore
-            result.duration[(index ? `end_${RoundIndex + 1}` : `start_${RoundIndex + 1}`)] = time.format('YYYY-MM-DD HH:mm:ss')
+            result.duration[(index ? `end_${RoundIndex + 1}` : `start_${RoundIndex + 1}`)] = dayjs(time).format('YYYY-MM-DD HH:mm:ss')
         })
     })
     return result
@@ -78,13 +79,6 @@ export function convert_to_table(v: RoundReturnType): RoundTableItemType[] {
  * 3. 下一任务，起始时间选择时，应当禁用上一任务结束及之前的时间
  */
 
-// const range = (start: number, end: number) => {
-//     const result = [];
-//     for (let i = start; i < end; i++) {
-//         result.push(i);
-//     }
-//     return result;
-// };
 
 export function disabledDate(preTask: Array<Dayjs> | undefined) {
     return (current: Dayjs) => {
@@ -94,7 +88,7 @@ export function disabledDate(preTask: Array<Dayjs> | undefined) {
 
 // 下一任务的起始时间应默认设置为上一任务的结束时间
 export function autoSetNextTaskStartTime(preTask: Array<Dayjs> | undefined,
-    form: FormInstance, taskOrder: number) {
+    form: FormInstance | MobileFormInstance, taskOrder: number) {
     const curTask = form.getFieldValue(['duration', taskOrder])
     if (preTask && preTask[1] && !curTask) {
         // 当前任务为空时，可直接赋值
@@ -119,24 +113,12 @@ export function RangePickerValidator(_: RuleObject, v: any): Promise<any> {
     return Promise.resolve()
 }
 
-// 上一个任务的起止时间
-// export function disabledTime(preTask: Array<Dayjs> | undefined) {
-//     return (date: Dayjs) => {
-//         // xx.day()=>返回周几
-//         const day = preTask && preTask[1] && preTask[1].date()
-//         const hour = preTask && preTask[1] && preTask[1].hour()
-//         const minute = preTask && preTask[1] && preTask[1].minute()
-//         if (date?.date() === day) {
-//             if (date?.hour() === hour) {
-//                 return {
-//                     disabledHours: () => range(0, 24).splice(0, hour),
-//                     disabledMinutes: () => range(0, 60).splice(0, minute)
-//                 }
-//             } else {
-//                 return {
-//                     disabledHours: () => range(0, 24).splice(0, hour)
-//                 }
-//             }
-//         }
-//     }
-// }
+// 移动端表单校验
+export function PickerValidator(_: RuleObject, cur: Dayjs, pre: Dayjs): Promise<any> {
+    if (!cur) {
+        return Promise.reject('时间不能未空')
+    } else if (!!pre && cur.valueOf() < pre.valueOf()) {
+        return Promise.reject('结束时间不能早于开始时间')
+    }
+    return Promise.resolve()
+}

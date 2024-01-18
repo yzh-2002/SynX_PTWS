@@ -19,6 +19,7 @@ const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
 const CreateTeach = lazy(() => import("@/views/mobile/Form/TeachInfo"))
 
 const CreateStu = lazy(() => import("@/views/mobile/Form/StuInfo"))
+const CreateRound = lazy(() => import("@/views/mobile/Form/Round"))
 
 const router = createBrowserRouter([
     {
@@ -68,7 +69,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'create-round',
-                element: <></>
+                element: <CreateRound />
             },
             {
                 path: 'create-teach',

@@ -1,0 +1,9 @@
+/* 轮次配置页面的Collapse组件去除padding和下拉icon */
+
+.round_collapse .rv-cell {
+    padding: 0 !important;
+}
+
+.round_collapse .rv-icon {
+    display: none !important;
+}
