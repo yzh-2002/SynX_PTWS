@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { ReactNode, useMemo } from "react"
 import { ManagerO } from "@react-vant/icons"
 
-interface MenuItemType {
+export interface MenuItemType {
     title: string,
     tipInfo?: string,
     icon: ReactNode,

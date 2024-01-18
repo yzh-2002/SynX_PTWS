@@ -20,7 +20,7 @@ interface ChooseTeachContentPropType {
     setTutorList: (v: SelectedTutorType[]) => void
 }
 
-const MAX_SELECT_TUTOR = 3
+export const MAX_SELECT_TUTOR = 3
 
 export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorList, setTutorList
 }: ChooseTeachContentPropType) {
