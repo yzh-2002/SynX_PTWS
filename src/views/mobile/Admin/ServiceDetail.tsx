@@ -8,6 +8,7 @@ import { getWorkInfo } from "@/api/admin/service"
 
 import TeachStuInfo from "./TeachStuInfo"
 import RoundInfo from "./Round"
+import MSInfo from "./MSInfo"
 import PageLoading from "@/views/App/PageLoading"
 
 export default function ServiceDetail() {
@@ -35,7 +36,11 @@ export default function ServiceDetail() {
                     workInfoLoading ? <PageLoading /> : <TeachStuInfo id={serviceInfo.id} />
                 )
             },
-            { key: 'ms-info', title: '双选详情', children: <></> },
+            {
+                key: 'ms-info', title: '双选详情', children: (
+                    workInfoLoading ? <PageLoading /> : <MSInfo id={serviceInfo.id} />
+                )
+            },
         ]
     }, [workInfoLoading])
     return (

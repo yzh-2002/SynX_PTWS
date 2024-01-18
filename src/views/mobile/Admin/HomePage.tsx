@@ -6,6 +6,7 @@ import { ManagerO } from "@react-vant/icons"
 
 interface MenuItemType {
     title: string,
+    tipInfo?: string,
     icon: ReactNode,
     bgColor: string,
     onClick: () => void
@@ -18,6 +19,7 @@ export default function HomePage() {
         return [
             {
                 title: '双选服务',
+                tipInfo: '轮次配置 | 师生导入 | 双选详情',
                 icon: <ManagerO fontSize={'30px'} color="#349929" />,
                 onClick: () => { navigator("/app/service") },
                 bgColor: 'bg-[#dcf5d5]'
@@ -35,9 +37,14 @@ export default function HomePage() {
                 {menuList.map(item => {
                     return (
                         <div key={item.title} onClick={item.onClick}
-                            className="flex flex-col justify-center w-12 mt-2 mr-2 cursor-pointer">
-                            <div className={`flex justify-center items-center h-10 rounded-md ${item.bgColor}`}>{item.icon}</div>
-                            <span className="text-xs text-[#696969]">{item.title}</span>
+                            className=" w-4/5 p-2 my-2 flex"
+                            style={{ boxShadow: "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px" }}
+                        >
+                            <div className={`flex justify-center items-center h-10 w-10 rounded-md ${item.bgColor}`}>{item.icon}</div>
+                            <div className="ml-4 flex flex-col justify-between">
+                                <span className="text-xs font-bold">{item.title}</span>
+                                <span className="text-xs text-[#696969]">{item?.tipInfo}</span>
+                            </div>
                         </div>
                     )
                 })}

@@ -48,7 +48,7 @@ export default function TeachMatchInfo({ id }: { id: string }) {
                 dataSource={MSInfo?.twsInfo}
                 pagination={{
                     showSizeChanger: true,
-                    total: MSInfo?.total,
+                    total: MSInfo?.twsInfo?.length,
                     pageSizeOptions: [5, 10, 20, 50, 100],
                     pageSize: params?.size,
                     current: params?.page,
