@@ -18,8 +18,8 @@ interface TableItemType {
     status: number,
     stage: number
 }
-const TEACH_TASK_STATUS = ['未开始', '进行中', '已结束']
-const TEACH_TASK_STATUS_COLOR = ['#108ee9', '#1ee30a', '#f50']
+export const TEACH_TASK_STATUS = ['未开始', '进行中', '已结束']
+export const TEACH_TASK_STATUS_COLOR = ['#108ee9', '#1ee30a', '#f50']
 
 
 function CardContent({ round }: { round: RoundReturnType }) {

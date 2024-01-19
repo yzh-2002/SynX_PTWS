@@ -9,7 +9,7 @@ import { StuInfoType } from "@/objects/task"
 import { ColumnsType } from "antd/es/table"
 import { FilePdfOutlined } from "@ant-design/icons"
 
-const ChineseNumbers = ['零', '一', '二', '三']
+export const ChineseNumbers = ['零', '一', '二', '三']
 
 interface TeachTaskContentPropType {
     stuList: StuInfoType[],
@@ -77,8 +77,8 @@ function TeachTaskContent({ stuList, oddQuotas, processId, refresh }: TeachTaskC
     )
 }
 
-const CLASS_ALIAS = ['成功匹配', '管理匹配', '拒绝匹配']
-const CLASS_COLOR = ['#1ee30a', '#108ee9', '#f50']
+export const CLASS_ALIAS = ['成功匹配', '管理匹配', '拒绝匹配']
+export const CLASS_COLOR = ['#1ee30a', '#108ee9', '#f50']
 // class表示类型，0->成功匹配 1->管理匹配 2->拒绝匹配
 function TeachTaskResult({ stuList }: { stuList: (StuInfoType & { type: number })[] }) {
     const TeachTaskResultColumns = useMemo<ColumnsType<StuInfoType & { type: number }>>(() => {

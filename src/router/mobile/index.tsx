@@ -24,6 +24,11 @@ const StuRoundList = loadPage(lazy(() => import("@/views/mobile/Student/RoudList
 const StuRoundResult = loadPage(lazy(() => import("@/views/mobile/Student/RoundResult")))
 const StuRoundDetail = loadPage(lazy(() => import("@/views/mobile/Student/RoundDetail")))
 
+const TeachHome = loadPage(lazy(() => import("@/views/mobile/Teach/HomePage")))
+const TeachRoundResult = loadPage(lazy(() => import("@/views/mobile/Teach/RoundResult")))
+const TeachRoundList = loadPage(lazy(() => import("@/views/mobile/Teach/RoudList")))
+const TeachRoundDetail = loadPage(lazy(() => import("@/views/mobile/Teach/RoundDetail")))
+
 
 const router = createBrowserRouter([
     {
@@ -103,8 +108,20 @@ const router = createBrowserRouter([
             // 教师端
             {
                 path: 'tutor-home',
-                element: <></>
-            }
+                element: <TeachHome access="teacher" />
+            },
+            {
+                path: 'tutor-round-result',
+                element: <TeachRoundResult access="teacher" />
+            },
+            {
+                path: 'tutor-round-list',
+                element: <TeachRoundList access="teacher" />
+            },
+            {
+                path: 'tutor-round-detail',
+                element: <TeachRoundDetail access="teacher" />
+            },
         ]
     },
     {
