@@ -49,7 +49,7 @@ export default function UserMenu() {
                 icon: <SettingOutlined />, hidden: user?.identity !== 'teacher'
             },
         ]
-    }, [user, serviceInfo?.id, getSelfLoading])
+    }, [user?.identity, user?.id, serviceInfo?.id, getSelfLoading])
     const content = useMemo(() => {
         return (
             <div className="cursor-pointer">

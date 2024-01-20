@@ -5,12 +5,12 @@ import { SearchMSParams, MSType, SearchStuMSParams, StuMSType } from "@/objects/
  * getMSInfo:记录学生当前是否提交简历，选择了导师，参与到第几轮次等数据（更细致）
  * getStuMSInfo:记录学生是否完成双选
  */
-export const getMSInfo = api<SearchMSParams, { twsInfo: MSType[] }>({
+export const getMSInfo = api<SearchMSParams, { total: number, twsInfo: MSType[] }>({
     url: '/twsInfo',
     method: 'GET'
 })
 
-export const getStuMSInfo = api<SearchStuMSParams, StuMSType[]>({
+export const getStuMSInfo = api<SearchStuMSParams, { total: number, userInfo: StuMSType[] }>({
     url: '/twsInfo/student',
     method: 'GET'
 })
@@ -31,7 +31,6 @@ export const exportStuMSInfo = ({ ...params }: SearchStuMSParams) => {
     })
 }
 
-// TODO:如何理解？
 export const exportTeachMSInfo = ({ workId }: { workId: string }) => {
     return downloadFile({
         url: '/twsInfo/teacher/excel',

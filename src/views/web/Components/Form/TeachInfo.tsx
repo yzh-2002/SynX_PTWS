@@ -1,5 +1,5 @@
 import { Button, Form, Input, Select, Row, Col, Modal } from "antd";
-import { SearchOutlined } from "@ant-design/icons"
+import { SearchOutlined, RedoOutlined } from "@ant-design/icons"
 import { DOWNLOAD_TEACH_URL } from "@/constants/app"
 import UploadCard from "../UploadCard";
 import { useEffect, useState } from "react";
@@ -7,6 +7,8 @@ import { useRequest } from "ahooks";
 import { useApi } from "@/api/request";
 import { addTeacherBatch, addTeacher, updateTeacher } from "@/api/admin/teachInfo";
 import { TeacherReturnType, SearchTeacherParams } from "@/objects/teacher";
+import { getWorkStatus } from "@/api/admin/service";
+import PageLoading from "@/views/App/PageLoading";
 
 export const jobTitleOption = [
     { label: '教授', value: '教授' },
@@ -22,10 +24,11 @@ interface SearchTeacherFormPropType {
     refresh: () => void,
     // 打开新增导师modal
     addTeach: () => void,
-    setParams: (v: SearchTeacherParams) => void
+    setParams: (v: SearchTeacherParams) => void,
+    refreshTable: () => void
 }
 
-export function SearchTeacherForm({ id, refresh, setParams, addTeach }: SearchTeacherFormPropType) {
+export function SearchTeacherForm({ id, refresh, setParams, addTeach, refreshTable }: SearchTeacherFormPropType) {
     const [uploadModalOpen, setUploadModalOpen] = useState(false)
     const { loading: UploadLoading, runAsync: upload } = useRequest(useApi(addTeacherBatch), { manual: true })
     const [form] = Form.useForm()
@@ -59,13 +62,21 @@ export function SearchTeacherForm({ id, refresh, setParams, addTeach }: SearchTe
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <Form.Item>
-                            <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                        <div className="flex">
+                            <Form.Item>
+                                <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                    onClick={() => {
+                                        setParams(form.getFieldsValue(true))
+                                    }}
+                                />
+                            </Form.Item>
+                            <Button className="ml-2" type="primary" shape="circle" icon={<RedoOutlined />}
                                 onClick={() => {
-                                    setParams(form.getFieldsValue(true))
+                                    form.resetFields()
+                                    refreshTable()
                                 }}
-                            />
-                        </Form.Item>
+                            ></Button>
+                        </div>
                     </Col>
                 </Row>
             </Form>
@@ -99,75 +110,78 @@ export function TeacherForm(props: TeachFormPropType) {
     const [form] = Form.useForm()
     useEffect(() => {
         props.isEdit && form.setFieldsValue(props.teachInfo)
+        props.isEdit && getWorkStatusFun({ id: props.id })
     }, [props.isEdit])
     const { loading: AddLoading, runAsync: add } = useRequest(useApi(addTeacher), { manual: true })
     const { loading: UpdateLoading, runAsync: update } = useRequest(useApi(updateTeacher), { manual: true })
+    const { loading: WorkStatusLoading, data: workStatus, run: getWorkStatusFun } = useRequest(useApi(getWorkStatus), { manual: true })
     return (
-        <Form labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} form={form}>
-            <Form.Item label={'姓名'} name={'name'} rules={[{ required: true, message: '请输入姓名' }]}>
-                <Input placeholder={'请输入姓名'} />
-            </Form.Item>
-            <Form.Item label={'导师页面链接'} name={'details'}>
-                <Input placeholder={'请输入导师页面链接'} />
-            </Form.Item>
-            <Form.Item label={'工号'} name={'code'}
-                rules={[{
-                    required: true, message: '工号格式不正确', type: 'number',
-                    transform: (v) => !!v && Number(v)
-                }]}
-            >
-                <Input placeholder={'请输入工号'} />
-            </Form.Item>
-            <Form.Item label={'手机号码'} name={'account'}
-                rules={[{
-                    required: true, message: '手机号码格式不正确', pattern: /^1[3|4|5|7|8][0-9]\d{8}$/,
-                    transform: (v) => !!v && Number(v)
-                }]}
-            >
-                <Input placeholder={'请输入手机号码'} />
-            </Form.Item>
-            <Form.Item label={'邮箱'} name={'mail'}>
-                <Input placeholder={'请输入邮箱'} />
-            </Form.Item>
-            <Form.Item label={'招生名额'} name={'allQuotas'}
-                rules={[{
-                    required: true, message: '招生名额格式不正确', type: 'number',
-                    transform: (v) => !!v && Number(v)
-                }]}
-            >
-                {/*TODO：此处需考虑老师是否可编辑（轮次发布之后不可编辑） */}
-                <Input placeholder={'请输入招生名额'} />
-            </Form.Item>
-            <Form.Item label={'职称'} name={'jobTitle'} rules={[{ required: true, message: '请选择职称' }]}>
-                <Select options={jobTitleOption} placeholder={'请选择职称'} />
-            </Form.Item>
-            <Form.Item label={'研究方向'} name={'keywords'}>
-                <Input placeholder={'请输入研究方向'} />
-            </Form.Item>
-            <Form.Item label={'团队'} name={'teamName'} rules={[{ required: true, message: '请输入团队名称' }]}>
-                <Input placeholder={'请输入团队名称'} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ span: 13, offset: 5 }}>
-                <Button type="primary" loading={props.isEdit ? UpdateLoading : AddLoading}
-                    onClick={() => {
-                        form.validateFields().then((result) => {
-                            if (props.isEdit) {
-                                // 修改时需要携带用户的id信息
-                                result['id'] = props.teachInfo?.id
-                                update({ workId: props.id, ...result }, {
-                                    message: true, success: '修改导师成功'
-                                }).then(() => { props.callback() })
-                            } else {
-                                add({ id: props.id, userlist: [result] }, {
-                                    message: true, success: '添加导师成功'
-                                }).then(() => {
-                                    props.callback()
-                                })
-                            }
-                        })
-                    }}
-                >{props.isEdit ? '确定修改' : '确定新增'}</Button>
-            </Form.Item>
-        </Form>
+        WorkStatusLoading ? <PageLoading /> :
+            <Form labelCol={{ span: 5 }} wrapperCol={{ span: 17 }} form={form}>
+                <Form.Item label={'姓名'} name={'name'} rules={[{ required: true, message: '请输入姓名' }]}>
+                    <Input placeholder={'请输入姓名'} />
+                </Form.Item>
+                <Form.Item label={'导师页面链接'} name={'details'}>
+                    <Input placeholder={'请输入导师页面链接'} />
+                </Form.Item>
+                <Form.Item label={'工号'} name={'code'}
+                    rules={[{
+                        required: true, message: '工号格式不正确', type: 'number',
+                        transform: (v) => !!v && Number(v)
+                    }]}
+                >
+                    <Input placeholder={'请输入工号'} />
+                </Form.Item>
+                <Form.Item label={'手机号码'} name={'account'}
+                    rules={[{
+                        required: true, message: '手机号码格式不正确', pattern: /^1[3|4|5|7|8][0-9]\d{8}$/,
+                        transform: (v) => !!v && Number(v)
+                    }]}
+                >
+                    <Input placeholder={'请输入手机号码'} />
+                </Form.Item>
+                <Form.Item label={'邮箱'} name={'mail'}>
+                    <Input placeholder={'请输入邮箱'} />
+                </Form.Item>
+                <Form.Item label={'招生名额'} name={'allQuotas'}
+                    rules={[{
+                        required: true, message: '招生名额格式不正确', type: 'number',
+                        transform: (v) => !!v && Number(v)
+                    }]}
+                >
+                    <Input placeholder={'请输入招生名额'} disabled={workStatus?.isStart} />
+                </Form.Item>
+                <Form.Item label={'职称'} name={'jobTitle'} rules={[{ required: true, message: '请选择职称' }]}>
+                    <Select options={jobTitleOption} placeholder={'请选择职称'} />
+                </Form.Item>
+                <Form.Item label={'研究方向'} name={'keywords'}>
+                    <Input placeholder={'请输入研究方向'} />
+                </Form.Item>
+                <Form.Item label={'团队'} name={'teamName'} rules={[{ required: true, message: '请输入团队名称' }]}>
+                    <Input placeholder={'请输入团队名称'} />
+                </Form.Item>
+                <Form.Item wrapperCol={{ span: 13, offset: 5 }}>
+                    <Button type="primary" loading={props.isEdit ? UpdateLoading : AddLoading}
+                        onClick={() => {
+                            form.validateFields().then((result) => {
+                                if (props.isEdit) {
+                                    // 修改时需要携带用户的id信息 & 不能携带全部名额信息
+                                    result['id'] = props.teachInfo?.id
+                                    delete result['allQuotas']
+                                    update({ workId: props.id, ...result }, {
+                                        message: true, success: '修改导师成功'
+                                    }).then(() => { props.callback() })
+                                } else {
+                                    add({ id: props.id, userlist: [result] }, {
+                                        message: true, success: '添加导师成功'
+                                    }).then(() => {
+                                        props.callback()
+                                    })
+                                }
+                            })
+                        }}
+                    >{props.isEdit ? '确定修改' : '确定新增'}</Button>
+                </Form.Item>
+            </Form>
     )
 }

@@ -26,3 +26,9 @@ export const updateWorkStatus = api<{ id: string }>({
     url: '/work/status',
     method: 'GET'
 })
+
+// 获取work内是否有流程已启动
+export const getWorkStatus = api<{ id: string }, { isStart: boolean }>({
+    url: '/work/status/value',
+    method: 'GET'
+})

@@ -1,5 +1,5 @@
 import { Form, Row, Col, Input, Button } from "antd"
-import { SearchOutlined } from "@ant-design/icons"
+import { SearchOutlined, RedoOutlined } from "@ant-design/icons"
 import { StuMSParams } from "../../Admin/StuMatchInfo"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
@@ -8,10 +8,11 @@ import { exportStuMSInfo } from "@/api/admin/ms"
 interface SearchStuMatchFormPropType {
     id: string,
     params: StuMSParams,
-    setParams: (v: StuMSParams) => void
+    setParams: (v: StuMSParams) => void,
+    refreshTable: () => void
 }
 
-export function SearchStuMatchForm({ id, params, setParams }: SearchStuMatchFormPropType) {
+export function SearchStuMatchForm({ id, params, setParams, refreshTable }: SearchStuMatchFormPropType) {
     const { loading: ExportStuLoading, run: exportStu } = useRequest(useApi(exportStuMSInfo), { manual: true })
     const [form] = Form.useForm()
     return (
@@ -44,9 +45,19 @@ export function SearchStuMatchForm({ id, params, setParams }: SearchStuMatchForm
                 </Col>
                 <Col span={2}>
                     <Form.Item>
-                        <Button type="primary" shape="circle" icon={<SearchOutlined />} onClick={() => {
-                            setParams(form.getFieldsValue())
-                        }} />
+                        <div className="flex">
+                            <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                onClick={() => {
+                                    setParams({ ...form.getFieldsValue() })
+                                }}
+                            />
+                            <Button className="ml-2" type="primary" shape="circle" icon={<RedoOutlined />}
+                                onClick={() => {
+                                    form.resetFields()
+                                    refreshTable()
+                                }}
+                            ></Button>
+                        </div>
                     </Form.Item>
                 </Col>
                 <Col span={6}>

@@ -45,7 +45,7 @@ export interface StuTaskReturnType {
     processInfo: ProcessInfoType
     //学生可选择导师列表，与其他信息耦合，此处不适用，单独从另一接口返回
     tutorInfo: any,
-    // TODO：该字段实际未使用
+    // 该字段实际未使用
     selectedResInfo: any,
     // 用户上传简历，未上传简历时为空
     fileUrl: string,
@@ -129,4 +129,15 @@ export interface TeachTaskReturnType {
         // 教师拒绝选择的学生
         rejectStuInfo: StuInfoType[]
     }
+}
+
+// 学生申请教师列表时搜索参数
+export interface SearchChooseTeachListParams {
+    id: string;
+    jobTitle?: string;
+    keywords?: string;
+    page: number;
+    size: number;
+    teamName?: string;
+    teaName?: string;
 }

@@ -23,7 +23,9 @@ function CardContent({ round }: { round: RoundReturnType }) {
         return (
             <div className="flex justify-between">
                 <span className="font-bold text-lg">任务详情</span>
-                <Button type="primary" onClick={() => { navigator(`/app/stu-task?pid=${round?.id}`) }}>详情</Button>
+                <Button type="primary" disabled={!(round?.stage === 'submit' && round?.isAtStage)}
+                    onClick={() => { navigator(`/app/stu-task?pid=${round?.id}`) }}
+                >详情</Button>
             </div>
         )
     }

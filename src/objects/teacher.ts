@@ -27,5 +27,6 @@ export interface SearchTeacherParams {
     name?: string;
     phone?: string;
     teamName?: string;
-    // FIXME:没有分页？？
+    page: number,
+    size: number
 }

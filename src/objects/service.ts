@@ -23,7 +23,7 @@ export interface ServiceReturnType {
 }
 
 // 查询导师匹配服务参数类型
-// TODO:为什么需要分页？默认page:1,size:10
+// TODO:此处无需分页，后续后端考虑去掉该参数
 export interface SearchServiceParams {
     page: number;
     size: number;

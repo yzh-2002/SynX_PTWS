@@ -15,12 +15,16 @@ export default function TeachInfoList({ id }: { id: string }) {
     const { loading: TeachLoading, data: TeachList, run: getTeach, refresh } = useRequest(useApi(getTeacherList), { manual: true })
     const { loading: DelLoading, runAsync: delTeach } = useRequest(useApi(delTeacher), { manual: true })
     // 获取未双选学生信息列表 & 管理员为教师指定学生
-    const { loading: NotSelectedLoading, data: NotSelectedStu, refresh: refreshNotSelected } = useRequest(useApi(getNotSelectStuList), {
-        defaultParams: [{ workId: id }]
+    const { loading: NotSelectedLoading, data: NotSelectedStu, run: getNoSelected, refresh: refreshNotSelected } = useRequest(useApi(getNotSelectStuList), {
+        manual: true
     })
     const { loading: SpecifyLoading, runAsync: Specify } = useRequest(useApi(specifyStu), { manual: true })
-    const [params, SetParams] = useState<SearchTeacherParams>({})
+    // 教师列表搜索参数
+    const [params, setParams] = useState<SearchTeacherParams>({ page: 1, size: 5 })
+    // 未选择导师列表搜索参数
+    const [noSelectParams, setNoSelectParams] = useState({ page: 1, size: 5 })
     useEffect(() => { getTeach({ id, ...params }) }, [params])
+    useEffect(() => { getNoSelected({ workId: id, ...noSelectParams }) }, [noSelectParams])
     const [teachModalOpen, setTeachModalOpen] = useState(false)
     // 指定学生Modal
     const [specifyStuModalOpen, setSpecifyStuModalOpen] = useState(false)
@@ -101,11 +105,12 @@ export default function TeachInfoList({ id }: { id: string }) {
             <SearchTeacherForm
                 id={id}
                 refresh={refresh}
-                setParams={SetParams}
+                setParams={(v) => setParams({ ...params, ...v })}
                 addTeach={() => {
                     setIsEdit(false)
                     setTeachModalOpen(true)
                 }}
+                refreshTable={() => setParams({ page: 1, size: 5 })}
             />
             <Table
                 className="mt-4"
@@ -115,7 +120,12 @@ export default function TeachInfoList({ id }: { id: string }) {
                 pagination={{
                     hideOnSinglePage: true,
                     total: TeachList?.total,
-                    pageSize: 5
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
                 }}
             />
             <Modal
@@ -136,11 +146,24 @@ export default function TeachInfoList({ id }: { id: string }) {
                 onCancel={() => setSpecifyStuModalOpen(false)}
                 destroyOnClose footer={null}
             >
-                <SearchSpecifyStuForm />
+                <SearchSpecifyStuForm
+                    setParams={(v) => setNoSelectParams({ ...noSelectParams, ...v })}
+                    refreshTable={() => setNoSelectParams({ page: 1, size: 5 })}
+                />
                 <Table
                     loading={NotSelectedLoading}
                     columns={SpecifyStuColumns}
-                    dataSource={NotSelectedStu}
+                    dataSource={NotSelectedStu?.users}
+                    pagination={{
+                        hideOnSinglePage: true,
+                        total: NotSelectedStu?.total,
+                        pageSizeOptions: [5, 10, 20, 50, 100],
+                        pageSize: noSelectParams?.size,
+                        current: noSelectParams?.page,
+                        onChange: (page, size) => {
+                            setNoSelectParams({ ...noSelectParams, page, size })
+                        }
+                    }}
                 />
             </Modal>
         </div>

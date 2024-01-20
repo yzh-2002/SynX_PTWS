@@ -1,5 +1,5 @@
 import { ajax, api, uploadFile } from "../request";
-import { StuTaskReturnType, StuChooseTeachType } from "@/objects/task";
+import { StuTaskReturnType, StuChooseTeachType, SearchChooseTeachListParams } from "@/objects/task";
 
 export const getStuTaskInfo = api<{ id: string, page: number, size: number }, StuTaskReturnType>({
     url: '/process/instance',
@@ -14,10 +14,11 @@ export const uploadCV = ({ id, file }: { id: string, file: File }) => {
     })
 }
 
+
 // 获取学生任务中可选择的教师列表
 export const getChooseTeachList = api<
-    { id: string, page: number, size: number },
-    { tutorTotal: number, userMaps: StuChooseTeachType[] }>
+    SearchChooseTeachListParams,
+    { total: number, userMaps: StuChooseTeachType[] }>
     ({
         url: '/process/instance-tutor',
         method: 'GET'

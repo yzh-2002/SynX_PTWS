@@ -1,11 +1,12 @@
 import { ColumnsType } from "antd/es/table"
 import { SelectedTutorType, StuChooseTeachType } from "@/objects/task"
-import { SearchOutlined } from "@ant-design/icons"
-import { Form, Row, Col, Input, Button, Popconfirm, Table } from "antd"
+import { SearchOutlined, RedoOutlined } from "@ant-design/icons"
+import { Form, Row, Col, Input, Button, Popconfirm, Table, Select } from "antd"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
 import { getChooseTeachList } from "@/api/student/task"
 import { useEffect, useState, useMemo } from "react"
+import { jobTitleOption } from "../Components/Form/TeachInfo"
 
 
 interface ChooseTeachContentPropType {
@@ -42,6 +43,7 @@ export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorLis
         }
     }, [selectedTutorList])
     const chooseTeachHeader = () => {
+        const [form] = Form.useForm()
         return (
             <>
                 <div className="flex items-center">
@@ -50,32 +52,43 @@ export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorLis
                         {`可选导师数量：${MAX_SELECT_TUTOR - tutorList?.length}`}
                     </span>
                 </div>
-                <Form layout="inline">
+                <Form layout="inline" form={form}>
                     <Row gutter={[, 8]}>
                         <Col span={11}>
-                            <Form.Item label="导师姓名">
-                                <Input />
+                            <Form.Item label="导师姓名" name={'teaName'}>
+                                <Input placeholder="请输入导师姓名" />
                             </Form.Item>
                         </Col>
                         <Col span={11}>
-                            <Form.Item label="研究方向">
-                                <Input />
+                            <Form.Item label="研究方向" name={'keywords'}>
+                                <Input placeholder="请输入研究方向" />
                             </Form.Item>
                         </Col>
                         <Col span={11}>
-                            <Form.Item label="导师团队">
-                                <Input />
+                            <Form.Item label="导师团队" name={'teamName'}>
+                                <Input placeholder="请输入导师团队" />
                             </Form.Item>
                         </Col>
                         <Col span={11}>
-                            <Form.Item label="导师职称">
-                                <Input />
+                            <Form.Item label="导师职称" name={'jobTitle'}>
+                                <Select dropdownStyle={{ width: "150px" }} allowClear placeholder={'请选择职称'} options={jobTitleOption} />
                             </Form.Item>
                         </Col>
                         <Col span={2}>
-                            <Form.Item>
-                                <Button type="primary" shape="circle" icon={<SearchOutlined />} />
-                            </Form.Item>
+                            <div className="flex">
+                                <Form.Item>
+                                    <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                        onClick={() => {
+                                            setParams({ ...params, ...form.getFieldsValue(true) })
+                                        }}
+                                    />
+                                </Form.Item>
+                                <Button className="ml-2" type="primary" shape="circle" icon={<RedoOutlined />}
+                                    onClick={() => {
+                                        setParams({ page: 1, size: 5 })
+                                    }}
+                                ></Button>
+                            </div>
                         </Col>
                     </Row>
                 </Form>
@@ -142,7 +155,7 @@ export function ChooseTeachContent({ id, selectedTutorList, taskStatus, tutorLis
                 dataSource={TeachList?.userMaps}
                 pagination={{
                     showSizeChanger: true,
-                    total: TeachList?.tutorTotal,
+                    total: TeachList?.total,
                     pageSizeOptions: [5, 10, 20, 50, 100],
                     pageSize: params?.size,
                     current: params?.page,

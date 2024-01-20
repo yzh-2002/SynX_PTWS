@@ -26,7 +26,6 @@ export const addStu = api<{ id: string } & { userlist: StudentAddType[] }>(
         })
 )
 
-// TODO:更新用户这里不需要workId？？？？
 // FIXME：外部id为workId，data中也存在id为userId，故需更改命名
 export const updateStu = api<{ workId?: string } & StudentReturnType>(
     async ({ workId, ...data }) =>

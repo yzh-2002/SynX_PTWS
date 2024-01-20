@@ -11,7 +11,7 @@ export const TARGET = {
     PRODUCTION: ''
 }
 
-// TODO:根据环境不同此处需调整
+// 根据环境不同此处需调整
 export const env = 'TEST_ENV'
 
 const proxy = {
@@ -24,4 +24,4 @@ const proxy = {
 
 export const PROXY = proxy
 // 项目入口：web/mobile
-export const entryKey = 'mobile'
+export const entryKey = 'web'

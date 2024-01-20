@@ -2,7 +2,6 @@ import { ajax, api, uploadFile } from "../request";
 import { SearchTeacherParams, TeacherReturnType, TeacherAddType } from "@/objects/teacher";
 import { StudentReturnType } from "@/objects/student";
 
-// TODO:搜索时参数在query中转义导致查询失败...
 export const getTeacherList = api<{ id: string } & SearchTeacherParams, { total: number, userInfo: TeacherReturnType[] }>({
     url: "/work/teacher",
     method: 'GET'
@@ -50,10 +49,11 @@ export const delTeacher = api<{ id: string, ids: string[] }>(
 )
 
 // 获取尚未选择导师的学生，用于管理端为老师指定学生
-export const getNotSelectStuList = api<{ workId: string }, StudentReturnType[]>({
-    url: '/twsInfo/student/notSelect',
-    method: 'GET'
-})
+export const getNotSelectStuList = api<{ workId: string, page: number, size: number },
+    { total: number, users: StudentReturnType[] }>({
+        url: '/twsInfo/student/notSelect',
+        method: 'GET'
+    })
 
 // 管理员为教师指定学生
 export const specifyStu = api<{ stuId: string, teaId: string, workId: string }>({

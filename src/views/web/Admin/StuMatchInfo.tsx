@@ -5,17 +5,17 @@ import { ColumnsType } from "antd/es/table"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
 import { getStuMSInfo } from "@/api/admin/ms"
-import { SearchStuMSParams } from "@/objects/ms"
+import { SearchStuMSParams, StuMSType } from "@/objects/ms"
 import { MS_STATUS, MS_STATUS_COLOR } from "@/constants/ms"
 
 export type StuMSParams = Omit<SearchStuMSParams, 'workId'>
 
 export default function StuMatchInfo({ id }: { id: string }) {
     const { loading: StuMSInfoLoading, data: StuMSInfo, run: getStuMS } = useRequest(useApi(getStuMSInfo), { manual: true })
-    const [params, setParams] = useState<StuMSParams>({})
+    const [params, setParams] = useState<StuMSParams>({ page: 1, size: 5 })
     useEffect(() => { getStuMS({ ...params, workId: id }) }, [params])
 
-    const StuMatchColumns = useMemo<ColumnsType<StuMSParams>>(() => {
+    const StuMatchColumns = useMemo<ColumnsType<StuMSType>>(() => {
         return [
             { title: '学生姓名', dataIndex: 'stuName' },
             { title: '学生考号', dataIndex: 'stuCode' },
@@ -34,8 +34,25 @@ export default function StuMatchInfo({ id }: { id: string }) {
 
     return (
         <>
-            <SearchStuMatchForm id={id} params={params} setParams={(v) => setParams({ ...params, ...v })} />
-            <Table className="mt-2" columns={StuMatchColumns} loading={StuMSInfoLoading} dataSource={StuMSInfo} />
+            <SearchStuMatchForm
+                id={id} params={params}
+                setParams={(v) => setParams({ ...params, ...v })}
+                refreshTable={() => setParams({ page: 1, size: 5 })}
+            />
+            <Table
+                className="mt-2" columns={StuMatchColumns}
+                loading={StuMSInfoLoading} dataSource={StuMSInfo?.userInfo}
+                pagination={{
+                    showSizeChanger: true,
+                    total: StuMSInfo?.total,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    pageSize: params?.size,
+                    current: params?.page,
+                    onChange: (page, size) => {
+                        setParams({ ...params, page, size })
+                    }
+                }}
+            />
         </>
     )
 }

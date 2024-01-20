@@ -33,10 +33,10 @@ export interface SearchMSParams {
     stuId?: string;
     teaId?: string;
     twsRound?: string;
+    keywords?: string;
     workId: string;
 }
 
-// TODO:没有分页？？
 export interface StuMSType {
     choiceRank?: number;
     status?: number;
@@ -55,4 +55,6 @@ export interface SearchStuMSParams {
     teaCode?: string;
     twsRound?: number;
     workId: string;
+    page: number,
+    size: number
 }

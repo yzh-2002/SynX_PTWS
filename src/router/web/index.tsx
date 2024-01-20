@@ -12,9 +12,9 @@ let AppLayout = loadPage(lazy(() => import("@/layouts/AppLayout")))
 AppLayout = withBreakpoint(AppLayout)
 
 const AdminHomePage = loadPage(lazy(() => import("@/views/web/Admin/HomePage")))
-const TeachStuInfo = lazy(() => import("@/views/web/Admin/TeachStuInfo"))
-const RoundInfo = lazy(() => import("@/views/web/Admin/RoundInfo"))
-const MSInfo = lazy(() => import("@/views/web/Admin/MSInfo"))
+const TeachStuInfo = loadPage(lazy(() => import("@/views/web/Admin/TeachStuInfo")))
+const RoundInfo = loadPage(lazy(() => import("@/views/web/Admin/RoundInfo")))
+const MSInfo = loadPage(lazy(() => import("@/views/web/Admin/MSInfo")))
 
 const StuHomePage = loadPage(lazy(() => import("@/views/web/Student/HomePage")))
 const StuTask = loadPage(lazy(() => import("@/views/web/Student/Task")))
@@ -57,16 +57,16 @@ const router = createBrowserRouter([
             },
             {
                 path: "round-info",
-                element: <RoundInfo />
+                element: <RoundInfo access={'admin'} />
             },
             {
                 path: "teach-stu-info",
-                element: <TeachStuInfo />
+                element: <TeachStuInfo access={'admin'} />
             },
             {
                 // mutual select
                 path: "ms-info",
-                element: <MSInfo />
+                element: <MSInfo access={'admin'} />
             },
             // 学生端
             {

@@ -140,32 +140,49 @@ export function StuInfoForm(props: StuFormPropType) {
     )
 }
 
+interface SearchSpecifyStuFormPropType {
+    setParams: (v: any) => void
+    refreshTable: () => void
+}
+
 // 管理端-师生导入-导师详情-指定学生
-export function SearchSpecifyStuForm() {
+export function SearchSpecifyStuForm({ setParams, refreshTable }: SearchSpecifyStuFormPropType) {
     const [form] = Form.useForm()
 
     return (
         <Form form={form}>
             <Row gutter={[8, 0]}>
                 <Col span={7}>
-                    <Form.Item label='姓名'>
+                    <Form.Item label='姓名' name={''}>
                         <Input />
                     </Form.Item>
                 </Col>
                 <Col span={7}>
-                    <Form.Item label='考号'>
+                    <Form.Item label='考号' name={''}>
                         <Input />
                     </Form.Item>
                 </Col>
                 <Col span={7}>
-                    <Form.Item label='手机号'>
+                    <Form.Item label='手机号' name={''}>
                         <Input />
                     </Form.Item>
                 </Col>
                 <Col span={3}>
-                    <Form.Item>
-                        <Button type="primary" shape="circle" icon={<SearchOutlined />} />
-                    </Form.Item>
+                    <div className="flex">
+                        <Form.Item>
+                            <Button type="primary" shape="circle" icon={<SearchOutlined />}
+                                onClick={() => {
+                                    setParams(form.getFieldsValue(true))
+                                }}
+                            />
+                        </Form.Item>
+                        <Button className="ml-2" type="primary" shape="circle" icon={<RedoOutlined />}
+                            onClick={() => {
+                                form.resetFields()
+                                refreshTable()
+                            }}
+                        ></Button>
+                    </div>
                 </Col>
             </Row>
         </Form>
