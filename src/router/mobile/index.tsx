@@ -12,12 +12,13 @@ let MobileLayout = loadPage(lazy(() => import("@/layouts/MobileLayout")))
 MobileLayout = withBreakpoint(MobileLayout)
 
 const AdminHome = loadPage(lazy(() => import("@/views/mobile/Admin/HomePage")))
-const ServiceList = lazy(() => import("@/views/mobile/Admin/Service"))
-const ServiceDetail = lazy(() => import("@/views/mobile/Admin/ServiceDetail"))
-const CreateService = lazy(() => import("@/views/mobile/Form/Service"))
-const CreateTeach = lazy(() => import("@/views/mobile/Form/TeachInfo"))
-const CreateStu = lazy(() => import("@/views/mobile/Form/StuInfo"))
-const CreateRound = lazy(() => import("@/views/mobile/Form/Round"))
+const ServiceList = loadPage(lazy(() => import("@/views/mobile/Admin/Service")))
+const ServiceDetail = loadPage(lazy(() => import("@/views/mobile/Admin/ServiceDetail")))
+const CreateService = loadPage(lazy(() => import("@/views/mobile/Form/Service")))
+const CreateTeach = loadPage(lazy(() => import("@/views/mobile/Form/TeachInfo")))
+const CreateStu = loadPage(lazy(() => import("@/views/mobile/Form/StuInfo")))
+const CreateRound = loadPage(lazy(() => import("@/views/mobile/Form/Round")))
+const SpecifyStu = loadPage(lazy(() => import("@/views/mobile/Admin/SpecifyStu")))
 
 const StuHome = loadPage(lazy(() => import("@/views/mobile/Student/HomePage")))
 const StuRoundList = loadPage(lazy(() => import("@/views/mobile/Student/RoudList")))
@@ -66,27 +67,31 @@ const router = createBrowserRouter([
             },
             {
                 path: 'service', //导师匹配服务页面
-                element: <ServiceList />
+                element: <ServiceList access="admin" />
             },
             {
                 path: 'service-detail', //详情页（管理员主体页面）
-                element: <ServiceDetail />
+                element: <ServiceDetail access="admin" />
             },
             {
                 path: "create-service",
-                element: <CreateService />
+                element: <CreateService access="admin" />
             },
             {
                 path: 'create-round',
-                element: <CreateRound />
+                element: <CreateRound access="admin" />
             },
             {
                 path: 'create-teach',
-                element: <CreateTeach />
+                element: <CreateTeach access="admin" />
             },
             {
                 path: 'create-stu',
-                element: <CreateStu />
+                element: <CreateStu access="admin" />
+            },
+            {
+                path: 'specify-stu',
+                element: <SpecifyStu access="admin" />
             },
             // 学生端
             {

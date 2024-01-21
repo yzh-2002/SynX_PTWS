@@ -69,7 +69,7 @@ function TeachCollapseCard({ teach, id, refresh }: TeachCollapsePropType) {
                 </Flex>
                 <div className="flex justify-end">
                     <Button type="primary" size="small" onClick={() => {
-
+                        navigator(`/app/specify-stu?tid=${teach?.id}&wid=${id}`)
                     }}>指定学生</Button>
                     <Button type="primary" size="small" style={{ margin: '0 8px' }} onClick={() => {
                         navigator(`/app/create-teach?tid=${teach?.id}&wid=${id}`)
@@ -101,12 +101,12 @@ export default function TeachInfo({ id }: { id: string }) {
     const [searchValue, setSearchValue] = useState('')
     const [page, setPage] = useState(1)
     const navigator = useNavigate()
-    // TODO:获取教师目前未分页
     const { loading: TeachListLoading, data: TeachList, run: getTeach, refresh } = useRequest(useApi(getTeacherList), {
-        defaultParams: [{ id }]
+        defaultParams: [{ id, page: 1, size: 5 }]
     })
     const [uploadVisible, setUploadVisible] = useState(false)
     const { loading: UploadLoading, runAsync: uploadTeaches } = useRequest(useApi(addTeacherBatch), { manual: true })
+
     return (
         <>
             <>
@@ -130,12 +130,12 @@ export default function TeachInfo({ id }: { id: string }) {
                         value={searchValue} onChange={(v) => { setSearchValue(v) }}
                     />
                     <Button size="mini" type="primary" icon={<Search />} round onClick={() => {
-                        getTeach({ id, [searchField]: searchValue })
+                        getTeach({ id, [searchField]: searchValue, page: 1, size: 5 })
                     }} />
                     <Button size="mini" type="primary" icon={<Replay />} round onClick={() => {
                         setSearchField('')
                         setSearchValue('')
-                        getTeach({ id })
+                        getTeach({ id, page: 1, size: 5 })
                     }} />
                 </div>
                 <div className="flex p-2 items-center bg-white">
@@ -158,7 +158,10 @@ export default function TeachInfo({ id }: { id: string }) {
                 )
             }
             <Pagination totalItems={TeachList?.total || 0} itemsPerPage={5} value={page} mode='simple'
-                onChange={setPage}
+                onChange={(page) => {
+                    setPage(page)
+                    getTeach({ id, page, size: 5 })
+                }}
             />
             <Popup visible={uploadVisible} title={'批量导入'} round
                 onClose={() => setUploadVisible(false)}

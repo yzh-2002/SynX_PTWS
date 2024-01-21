@@ -55,9 +55,11 @@ function RoundCard({ round, }: { round: RoundReturnType }) {
                     </Flex.Item>
                 </Flex>
                 <div className="w-full flex justify-end">
-                    <Button type="primary" size="small" onClick={() => {
-                        navigator(`/app/stu-round-detail?rid=${round?.id}&rname=${encodeURIComponent(round?.name)}`)
-                    }}>详情</Button>
+                    <Button type="primary" size="small"
+                        disabled={!(round?.stage === 'submit' && round?.isAtStage)}
+                        onClick={() => {
+                            navigator(`/app/stu-round-detail?rid=${round?.id}&rname=${encodeURIComponent(round?.name)}`)
+                        }}>详情</Button>
                 </div>
             </Collapse.Item>
         </Collapse>

@@ -24,4 +24,4 @@ const proxy = {
 
 export const PROXY = proxy
 // 项目入口：web/mobile
-export const entryKey = 'web'
+export const entryKey = 'mobile'

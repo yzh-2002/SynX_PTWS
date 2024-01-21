@@ -123,16 +123,16 @@ export default function TeachMSInfo({ id }: { id: string }) {
                     >导出匹配详情</Button>
                 </div>
             </>
-            <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${MSInfo?.twsInfo?.length || 0}条数据`}</div>
+            <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${MSInfo?.total || 0}条数据`}</div>
             {
                 MSLoading ? <PageLoading /> : (
-                    !!MSInfo?.twsInfo?.length ? (
+                    !!MSInfo?.total ? (
                         MSInfo?.twsInfo?.map((ms) =>
                             <MSCollapseCard MSInfo={ms} />)
                     ) : <Empty description={'暂无数据'} />
                 )
             }
-            <Pagination totalItems={MSInfo?.twsInfo?.length || 0} itemsPerPage={5} value={page} mode='simple'
+            <Pagination totalItems={MSInfo?.total || 0} itemsPerPage={5} value={page} mode='simple'
                 onChange={setPage}
             />
         </>

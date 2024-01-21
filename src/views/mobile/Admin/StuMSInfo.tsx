@@ -69,7 +69,7 @@ export default function StuMSInfo({ id }: { id: string }) {
     const [page, setPage] = useState(1)
 
     const { loading: StuMSLoading, data: StuMSInfo, run: getStuMS } = useRequest(useApi(getStuMSInfo), {
-        defaultParams: [{ workId: id }]
+        defaultParams: [{ workId: id, page: 1, size: 5 }]
     })
     const { loading: ExportStuLoading, runAsync: exportStu } = useRequest(useApi(exportStuMSInfo), { manual: true })
     return (
@@ -94,32 +94,35 @@ export default function StuMSInfo({ id }: { id: string }) {
                         value={searchValue} onChange={(v) => { setSearchValue(v) }}
                     />
                     <Button size="mini" type="primary" icon={<Search />} round onClick={() => {
-                        getStuMS({ workId: id, [searchField]: searchValue })
+                        getStuMS({ workId: id, [searchField]: searchValue, page: 1, size: 5 })
                     }} />
                     <Button size="mini" type="primary" icon={<Replay />} round onClick={() => {
                         setSearchField('')
                         setSearchValue('')
                         setPage(1)
-                        getStuMS({ workId: id })
+                        getStuMS({ workId: id, page: 1, size: 5 })
                     }} />
                 </div>
                 <div className="flex p-2 items-center bg-white">
                     <Button type="primary" size="small" loading={ExportStuLoading} onClick={() => {
-                        exportStu({ workId: id }, { message: true }).then(() => { Toast.success('导出学生信息成功') })
+                        exportStu({ workId: id, page, size: 5 }, { message: true }).then(() => { Toast.success('导出学生信息成功') })
                     }}>导出学生信息</Button>
                 </div>
             </>
-            <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${StuMSInfo?.length || 0}条数据`}</div>
+            <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${StuMSInfo?.total || 0}条数据`}</div>
             {
                 StuMSLoading ? <PageLoading /> : (
-                    !!StuMSInfo?.length ? (
-                        StuMSInfo?.map((ms) =>
+                    !!StuMSInfo?.total ? (
+                        StuMSInfo?.userInfo?.map((ms) =>
                             <StuMSCollapseCard stuMSInfo={ms} />)
                     ) : <Empty description={'暂无数据'} />
                 )
             }
-            <Pagination totalItems={StuMSInfo?.length || 0} itemsPerPage={5} value={page} mode='simple'
-                onChange={setPage}
+            <Pagination totalItems={StuMSInfo?.total || 0} itemsPerPage={5} value={page} mode='simple'
+                onChange={(page) => {
+                    setPage(page)
+                    getStuMS({ workId: id, page, size: 5 })
+                }}
             />
         </>
     )

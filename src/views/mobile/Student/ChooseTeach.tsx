@@ -9,10 +9,10 @@ import { StuChooseTeachType, SelectedTutorType, StuTaskReturnType } from "@/obje
 import { MAX_SELECT_TUTOR } from "@/views/web/Student/TaskContent"
 
 const SearchFields = [
-    { text: '导师姓名', value: '1' },
-    { text: '导师团队', value: '2' },
-    { text: '研究方向', value: '3' },
-    { text: '导师职称', value: '4' },
+    { text: '导师姓名', value: 'teaName' },
+    { text: '导师团队', value: 'teamName' },
+    { text: '研究方向', value: 'keywords' },
+    { text: '导师职称', value: 'jobTitle' },
 ]
 
 interface TeachCollapseCardPropType {
@@ -79,7 +79,7 @@ interface ChooseTeachListPropType {
 }
 
 function ChooseTeachList({ tutorList, setTutorList, taskStatus }: ChooseTeachListPropType) {
-    const [searchField, setSearchField] = useState('')
+    const [searchField, setSearchField] = useState('teaName')
     const [searchValue, setSearchValue] = useState('')
     const [page, setPage] = useState(1)
     const params = new URLSearchParams(window.location.search)
@@ -99,7 +99,6 @@ function ChooseTeachList({ tutorList, setTutorList, taskStatus }: ChooseTeachLis
                         return <Input
                             className="h-8 bg-[#f5f5f7]" style={{ width: '240px' }}
                             placeholder="请选择搜索字段" onClick={() => actions.open()}
-                            prefix={!!val ? '搜索字段:' : ''}
                             value={!!val ? SearchFields.find(v => v.value === val)?.text : ''}
                         />
                     }}
@@ -117,11 +116,10 @@ function ChooseTeachList({ tutorList, setTutorList, taskStatus }: ChooseTeachLis
                     getTeach({ id: params.get('rid')!, page: 1, size: 5 })
                 }} />
             </div>
-            <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${TeachList?.tutorTotal || 0}条数据`}</div>
+            <div className="bg-[#f5f5f7] my-2 h-2 flex items-center pl-4 text-[#909398]">{`共${TeachList?.total || 0}条数据`}</div>
             {
                 TeachListLoading ? <PageLoading /> : (
-                    // TODO:此处未返回tutorTotal字段？？？
-                    !!TeachList?.userMaps?.length ? (
+                    !!TeachList?.total ? (
                         TeachList?.userMaps?.map((teach) =>
                             <TeachCollapseCard
                                 teachInfo={teach}
@@ -132,7 +130,7 @@ function ChooseTeachList({ tutorList, setTutorList, taskStatus }: ChooseTeachLis
                     ) : <Empty description={'暂无数据'} />
                 )
             }
-            <Pagination totalItems={TeachList?.tutorTotal || 0} itemsPerPage={5} value={page} mode='simple'
+            <Pagination totalItems={TeachList?.total || 0} itemsPerPage={5} value={page} mode='simple'
                 onChange={(page) => {
                     setPage(page)
                     getTeach({ id: params.get('rid')!, [searchField]: searchValue, page, size: 5 })

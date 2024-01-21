@@ -28,5 +28,6 @@ export interface SearchTeacherParams {
     phone?: string;
     teamName?: string;
     page: number,
-    size: number
+    size: number,
+    teaId?: string
 }

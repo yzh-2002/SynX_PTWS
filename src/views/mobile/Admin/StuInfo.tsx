@@ -49,7 +49,7 @@ function StuCollapseCard({ stu, id, refresh }: StuCollapsePropType) {
                 </Flex>
                 <div className="flex justify-end">
                     <Button type="primary" size="small" style={{ margin: '0 8px' }} onClick={() => {
-                        navigator(`/app/create-stu?tid=${stu?.id}&wid=${id}`)
+                        navigator(`/app/create-stu?sid=${stu?.id}&wid=${id}`)
                     }}>修改</Button>
                     <Button type="danger" size="small" onClick={() => {
                         Dialog.show({

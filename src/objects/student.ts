@@ -30,4 +30,5 @@ export interface SearchStudentParams {
     page?: number;
     phone?: string; //=>account ???
     size?: number;
+    stuId?: string
 }
