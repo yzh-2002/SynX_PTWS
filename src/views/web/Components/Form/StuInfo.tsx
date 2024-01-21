@@ -153,17 +153,17 @@ export function SearchSpecifyStuForm({ setParams, refreshTable }: SearchSpecifyS
         <Form form={form}>
             <Row gutter={[8, 0]}>
                 <Col span={7}>
-                    <Form.Item label='姓名' name={''}>
+                    <Form.Item label='姓名' name={'name'}>
                         <Input />
                     </Form.Item>
                 </Col>
                 <Col span={7}>
-                    <Form.Item label='考号' name={''}>
+                    <Form.Item label='考号' name={'code'}>
                         <Input />
                     </Form.Item>
                 </Col>
                 <Col span={7}>
-                    <Form.Item label='手机号' name={''}>
+                    <Form.Item label='手机号' name={'phone'}>
                         <Input />
                     </Form.Item>
                 </Col>
