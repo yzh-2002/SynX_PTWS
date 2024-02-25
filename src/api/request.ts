@@ -80,14 +80,15 @@ export async function downloadFile({ method = 'GET', ...args }: AxiosRequestConf
     const disposition = headers['content-disposition'] || ''
     // disposition内容采用了RFC 5987扩展语法，也即实际内容为：
     // content-disposition: attachment;filename*=[encode]''[filename] 
-    // TODO：此处可根据content-type对应mime类型确定后缀
+    const fileType = headers['content-type'] || ''
+    console.log(fileType)
     let fileName = '导师匹配管理系统下载文件.xlsx' //默认文件名
     const matches = /filename\*=utf-8''(.+)/.exec(disposition)
     if (matches && matches[1]) {
         const encodedFileName = matches[1]
         fileName = decodeURIComponent(encodedFileName)
     }
-    let blob = new Blob([res.data])
+    let blob = new Blob([res.data], { type: fileType })
     // let blob = res.data.blob()
     let url = window.URL.createObjectURL(blob);
     let a = document.createElement('a');
