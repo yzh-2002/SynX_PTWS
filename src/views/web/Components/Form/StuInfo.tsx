@@ -62,7 +62,7 @@ export function SearchStuInfoForm({ id, refresh, addStu, setParams, refreshTable
             <div>
                 <Button type="primary" className="mr-2" onClick={() => { addStu() }}>增加学生</Button>
                 <Button type="primary" className="mr-2" onClick={() => { setUploadModalOpen(true) }}>批量导入</Button>
-                <a href={DOWNLOAD_STU_URL} download={'批量导入教师模板'}>下载批量导入学生模板</a>
+                <a href={DOWNLOAD_STU_URL} download={'批量导入学生模板'}>下载批量导入学生模板</a>
             </div>
             <Modal title={'批量上传'} footer={null} open={uploadModalOpen}
                 onCancel={() => { setUploadModalOpen(false) }} destroyOnClose

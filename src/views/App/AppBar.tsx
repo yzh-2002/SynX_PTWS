@@ -1,12 +1,14 @@
 import { ReactNode } from "react";
 import Logo from "./Logo";
+import { useBreakpoint,withBreakpoint } from "@/utils/breakpoints";
 
 interface AppBarPropType {
     user?: ReactNode
 }
 
 function AppBar(props: AppBarPropType) {
-    const APP_NAME = "信息与软件工程学院导师匹配管理系统"
+    const breakpoints =useBreakpoint()
+    const APP_NAME = breakpoints.width < 520 ? '导师匹配管理系统':"信息与软件工程学院导师匹配管理系统"
 
     return (
         <div
@@ -22,4 +24,4 @@ function AppBar(props: AppBarPropType) {
     )
 }
 
-export default AppBar
+export default withBreakpoint(AppBar)

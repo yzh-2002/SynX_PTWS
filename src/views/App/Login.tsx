@@ -13,6 +13,7 @@ import UESTCSceneUrl from "@/assets/uestc_scene.jpg"
 import { isLoginSelector } from "@/store/login"
 import { useRecoilValue } from "recoil"
 import { RoleHome } from "@/constants/app"
+import { withBreakpoint, useBreakpoint } from "@/utils/breakpoints"
 
 
 function Login() {
@@ -21,6 +22,7 @@ function Login() {
     const [loading, setLoading] = useState(true)
     const isLogin = useRecoilValue(isLoginSelector)
     const userInfo = useRecoilValue(userInfoState)
+    const breakpoints = useBreakpoint()
     const loginByCode = async (code: string) => {
         const params = new URLSearchParams(location.search)
         try {
@@ -75,6 +77,7 @@ function Login() {
             if (params.get('code')) {
                 loginByCode(params.get('code')!)
             } else {
+                // setLoading(false)
                 tryAutoLogin()
             }
         }
@@ -92,12 +95,12 @@ function Login() {
                 <div className="h-full flex flex-col justify-center items-center">
                     <Card
                         bodyStyle={{ padding: '32px 40px 12px 40px' }}
-                        style={{ width: '500px', margin: 'auto', marginTop: '96px', background: 'rgba(255,255,255, 0.9)' }}
+                        style={{ width: breakpoints.width < 520 ? breakpoints.width * 0.8 : '500px', margin: 'auto', marginTop: '96px', background: 'rgba(255,255,255, 0.9)' }}
                     >
                         <div className="mb-1">
                             <div style={{ height: '180px', margin: '0 0 20px 0' }}>
                                 <img
-                                    style={{ width: '320px', margin: 'auto' }}
+                                    style={{ width: breakpoints.width < 520 ? breakpoints.width * 0.6 : '320px', margin: 'auto' }}
                                     src="https://sf1-scmcdn-tos.pstatp.com/goofy/ee/suite/passport/static/login/img/login-bg.bb9a66c0.svg"
                                     alt="飞书登录"
                                 />
@@ -125,4 +128,4 @@ function Login() {
     )
 }
 
-export default Login
+export default withBreakpoint(Login)

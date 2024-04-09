@@ -5,7 +5,7 @@ import { loadPage } from "../utils/loadPage";
 import { withBreakpoint } from "@/utils/breakpoints";
 
 const OpenAccessLayout = loadPage(lazy(() => import("@/layouts/OpenAccessLayout")))
-const Login = loadPage(lazy(() => import("../../views/App/Login")))
+const Login = loadPage(lazy(() => import("@/views/App/Login")))
 const NotFound = lazy(() => import("@/router/utils/NotFound"))
 
 let AppLayout = loadPage(lazy(() => import("@/layouts/AppLayout")))
