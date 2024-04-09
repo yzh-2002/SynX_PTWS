@@ -6,7 +6,7 @@ export const TARGET = {
     // 本地测试环境
     DEV: `http://127.0.0.1:${MOCK_PORT}`,
     // 线上测试环境
-    TEST_ENV: 'http://121.37.1.63',
+    TEST_ENV: 'http://106.75.142.195',
     // 线上环境
     PRODUCTION: ''
 }
@@ -24,4 +24,4 @@ const proxy = {
 
 export const PROXY = proxy
 // 项目入口：web/mobile
-export const entryKey = 'mobile'
+export const entryKey = 'web'
