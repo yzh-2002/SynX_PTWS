@@ -25,11 +25,11 @@ export default function MSInfo() {
     const menuItems = useMemo(() => {
         return [
             {
-                label: '匹配详情', key: 'teacher-match-detail', children:
+                label: '双选匹配记录', key: 'teacher-match-detail', children:
                     workInfoLoading ? <PageLoading /> : <TeachMatchInfo id={serviceInfo.id} />
             },
             {
-                label: '学生信息', key: 'student-match-detail', children:
+                label: '学生匹配信息', key: 'student-match-detail', children:
                     workInfoLoading ? <PageLoading /> : <StuMatchInfo id={serviceInfo.id} />
             },
         ]

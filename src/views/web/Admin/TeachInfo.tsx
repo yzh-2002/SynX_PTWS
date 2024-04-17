@@ -33,13 +33,13 @@ export default function TeachInfoList({ id }: { id: string }) {
     const [teachInfo, setTeachInfo] = useState<TeacherReturnType>()
     const TeachColumns = useMemo<TableColumnsType<TeacherReturnType>>(() => {
         return [
+            { title: '工号', dataIndex: 'code', key: 'code' },
             {
                 title: '姓名', dataIndex: 'name', key: 'name',
                 render: (_, { name, details }) => {
                     return !!details && <a href={details} target="_blank">{name}</a> || name
                 }
             },
-            { title: '工号', dataIndex: 'code', key: 'code' },
             { title: '团队', dataIndex: 'teamName', key: 'teamName' },
             { title: '职称', dataIndex: 'jobTitle', key: 'jobTitle' },
             { title: '研究方向', dataIndex: 'keywords', key: 'keywords' },
@@ -76,8 +76,8 @@ export default function TeachInfoList({ id }: { id: string }) {
     }, [])
     const SpecifyStuColumns = useMemo<TableColumnsType<StudentReturnType>>(() => {
         return [
-            { title: '姓名', dataIndex: 'name', key: 'name' },
             { title: '考号', dataIndex: 'code', key: 'code' },
+            { title: '姓名', dataIndex: 'name', key: 'name' },
             { title: '手机号', dataIndex: 'account', key: 'phone' },
             {
                 title: '操作', key: 'action', render: (_, stu) => {
@@ -110,7 +110,7 @@ export default function TeachInfoList({ id }: { id: string }) {
                     setIsEdit(false)
                     setTeachModalOpen(true)
                 }}
-                refreshTable={() => setParams({ page: 1, size: 5 })}
+                refreshTable={() => setParams({ page: 1, size: params.size })}
             />
             <Table
                 className="mt-4"

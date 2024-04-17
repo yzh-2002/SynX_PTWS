@@ -18,8 +18,8 @@ export default function StuInfo({ id }: { id: string }) {
     const [stuInfo, setStuInfo] = useState<StudentReturnType>()
     const StuInfoColumns = useMemo<TableColumnsType<StudentReturnType>>(() => {
         return [
-            { title: '姓名', dataIndex: 'name', key: 'name' },
             { title: '考号', dataIndex: 'code', key: 'code' },
+            { title: '姓名', dataIndex: 'name', key: 'name' },
             { title: '手机号', dataIndex: 'account', key: 'phone' },
             {
                 title: '操作', key: 'action', render: (_, record) => {
@@ -55,7 +55,7 @@ export default function StuInfo({ id }: { id: string }) {
                     setStuModalOpen(true)
                 }}
                 setParams={(v) => setParams({ ...params, ...v })}
-                refreshTable={() => setParams({ page: 1, size: 5 })}
+                refreshTable={() => setParams({ page: 1, size: params.size })}
             />
             <Table
                 className="mt-2"

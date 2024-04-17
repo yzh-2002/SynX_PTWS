@@ -157,7 +157,7 @@ export function TeacherForm(props: TeachFormPropType) {
                 <Form.Item label={'研究方向'} name={'keywords'}>
                     <Input placeholder={'请输入研究方向'} />
                 </Form.Item>
-                <Form.Item label={'团队'} name={'teamName'} rules={[{ required: true, message: '请输入团队名称' }]}>
+                <Form.Item label={'团队'} name={'teamName'} rules={[{ message: '请输入团队名称' }]}>
                     <Input placeholder={'请输入团队名称'} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ span: 13, offset: 5 }}>

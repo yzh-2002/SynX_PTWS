@@ -73,10 +73,10 @@ export function SearchTeachMatchForm({ id, params, setParams, refreshTable }: Se
                 <Button className="mr-2" type="primary" loading={ExportTeachLoading}
                     onClick={() => {
                         exportTeach({ workId: id }, { message: true, success: '导出导师信息成功' })
-                    }}>导出导师信息</Button>
+                    }}>导出导师匹配信息</Button>
                 <Button type="primary" loading={ExportMSLoading} onClick={() => {
                     exportMS({ workId: id, ...params }, { message: true, success: '导出匹配详情成功' })
-                }}>导出匹配详情</Button>
+                }}>导出双选匹配详情</Button>
             </div>
         </>
     )

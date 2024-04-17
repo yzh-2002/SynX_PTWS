@@ -105,7 +105,8 @@ export default function RoundInfo() {
                 {
                     RoundLoading ? <PageLoading /> : (
                         !!RoundList?.length ? (
-                            RoundList.map((round, idx) => <CollapseCard key={round.id} {...GenerateCardConfig(round, idx)} />)
+                            // 按照round从大到小排序
+                            RoundList.sort((a, b) => b.round - a.round).map((round, idx) => <CollapseCard key={round.id} {...GenerateCardConfig(round, idx)} />)
                         ) : <Empty description="暂无数据" />
                     )
                 }

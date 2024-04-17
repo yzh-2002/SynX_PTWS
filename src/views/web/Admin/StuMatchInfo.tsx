@@ -37,7 +37,7 @@ export default function StuMatchInfo({ id }: { id: string }) {
             <SearchStuMatchForm
                 id={id} params={params}
                 setParams={(v) => setParams({ ...params, ...v })}
-                refreshTable={() => setParams({ page: 1, size: 5 })}
+                refreshTable={() => setParams({ page: 1, size: params.size })}
             />
             <Table
                 className="mt-2" columns={StuMatchColumns}

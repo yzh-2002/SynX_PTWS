@@ -1,8 +1,9 @@
-import { Form, Row, Col, Input, Button } from "antd"
+import { Form, Row, Col, Input, Button, Select } from "antd"
 import { SearchOutlined, RedoOutlined } from "@ant-design/icons"
 import { StuMSParams } from "../../Admin/StuMatchInfo"
 import { useRequest } from "ahooks"
 import { useApi } from "@/api/request"
+import { MS_STATUS } from "@/constants/ms"
 import { exportStuMSInfo } from "@/api/admin/ms"
 
 interface SearchStuMatchFormPropType {
@@ -40,7 +41,11 @@ export function SearchStuMatchForm({ id, params, setParams, refreshTable }: Sear
                 </Col>
                 <Col span={8}>
                     <Form.Item label='匹配状态' name={'status'}>
-                        <Input />
+                        <Select allowClear placeholder={'请选择匹配状态'}
+                            options={MS_STATUS.map((status, idx) => ({
+                                label: status, value: idx - 1
+                            }))}
+                        />
                     </Form.Item>
                 </Col>
                 <Col span={2}>
@@ -66,7 +71,7 @@ export function SearchStuMatchForm({ id, params, setParams, refreshTable }: Sear
                             onClick={() => {
                                 exportStu({ workId: id, ...params }, { message: true, success: '导出学生信息成功' })
                             }}
-                        >导出学生信息</Button>
+                        >导出学生匹配信息</Button>
                     </Form.Item>
                 </Col>
             </Row>

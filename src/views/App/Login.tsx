@@ -24,7 +24,7 @@ function Login() {
     const userInfo = useRecoilValue(userInfoState)
     const breakpoints = useBreakpoint()
     const loginByCode = async (code: string) => {
-        const params = new URLSearchParams(location.search)
+        // const params = new URLSearchParams(location.search)
         try {
             await loginAction(loginByLarkCode({
                 clientId: appId,
@@ -33,11 +33,18 @@ function Login() {
                 code: code,
             }))
             if (isLogin) {
-                navigate(params.get("redirect") || `/app${RoleHome[userInfo?.identity]}`)
+                // 登录失效之后返回首页，不再返回当前页面
+                navigate(
+                    // params.get("redirect") || 
+                    `/app${RoleHome[userInfo?.identity]}`)
             } else {
                 setLoading(false)
             }
-        } catch (e) {
+        } catch (e: any) {
+            if (e.code == ApiError.SERVER_DATA_FORMAT_ERROR) {
+                // TODO:是否要跳转到一个备用页面
+                message.error(e.toString())
+            }
             setLoading(false)
         }
     }
