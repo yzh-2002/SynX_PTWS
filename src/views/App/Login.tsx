@@ -36,7 +36,7 @@ function Login() {
                 // 登录失效之后返回首页，不再返回当前页面
                 navigate(
                     // params.get("redirect") || 
-                    `/app${RoleHome[userInfo?.identity]}`)
+                    `/app${RoleHome[userInfo?.identity]}`, { replace: true })
             } else {
                 setLoading(false)
             }
@@ -54,7 +54,8 @@ function Login() {
         try {
             await loginAction()
             if (isLogin) {
-                navigate(params.get("redirect") || `/app${RoleHome[userInfo?.identity]}`)
+                // replace，替换掉/login的路由记录，防止回退时反复进入login页面
+                navigate(params.get("redirect") || `/app${RoleHome[userInfo?.identity]}`, { replace: true })
             } else {
                 setLoading(false)
             }

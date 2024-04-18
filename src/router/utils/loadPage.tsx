@@ -17,10 +17,10 @@ function withLoginCheck(Component: ComponentType<any>): ComponentType<any> {
             return (<Component {...props} />)
         } else {
             if (noRedirect) {
-                return <Navigate to={'/login'} />
+                return <Navigate to={'/login'} replace />
             } else {
                 return <Navigate
-                    to={`/login?redirect=${encodeURIComponent(`${location?.pathname}${window.location.search}`)}`} />
+                    to={`/login?redirect=${encodeURIComponent(`${location?.pathname}${window.location.search}`)}`} replace />
             }
         }
     }
